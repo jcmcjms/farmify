@@ -226,3 +226,50 @@ export interface AddCartItemBody {
 export interface UpdateCartItemBody {
   quantity: number;
 }
+
+// ── Verification Types ─────────────────────────────────────────────────
+
+export interface FarmerProfile {
+  id: number
+  farmer_id: number
+  farm_name: string
+  farm_address: string
+  farm_city: string
+  farm_province: string
+  farm_size_hectares: number
+  years_farming: number
+  crops_grown: string
+  government_id_type: string
+  cooperative_name: string | null
+  verification_notes: string | null
+  submitted_at: string
+  reviewed_at: string | null
+  reviewed_by: number | null
+}
+
+export interface VerificationDocument {
+  id: number
+  farmer_id: number
+  document_type: string
+  file_path: string
+  file_name: string
+  mime_type: string
+  file_size: number
+}
+
+export interface VerificationStatus {
+  status: 'unverified' | 'pending' | 'verified' | 'rejected'
+  profile: FarmerProfile | null
+  documents: VerificationDocument[]
+}
+
+export interface VerificationListItem {
+  id: number
+  name: string
+  email: string
+  farm_name: string | null
+  farm_province: string | null
+  verification_status: string
+  submitted_at: string | null
+  reviewed_at: string | null
+}

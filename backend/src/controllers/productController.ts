@@ -153,6 +153,21 @@ export const productController = {
     try {
       const data = createProductSchema.parse(req.body);
 
+      // If user is a farmer, check verification status
+      if (req.user!.role === 'farmer') {
+        const vResult = await pool.query(
+          'SELECT verification_status FROM users WHERE id = $1',
+          [req.user!.id]
+        );
+        if (vResult.rows.length > 0 && vResult.rows[0].verification_status !== 'verified') {
+          res.status(403).json({
+            success: false,
+            error: 'Your account must be verified to sell products. Please complete your farmer verification first.',
+          });
+          return;
+        }
+      }
+
       const result = await pool.query(
         `INSERT INTO products (farmer_id, name, description, category, price, unit, quantity, image_url, is_organic, is_available)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
@@ -189,6 +204,21 @@ export const productController = {
     try {
       const { id } = req.params;
       const data = updateProductSchema.parse(req.body);
+
+      // If user is a farmer, check verification status
+      if (req.user!.role === 'farmer') {
+        const vResult = await pool.query(
+          'SELECT verification_status FROM users WHERE id = $1',
+          [req.user!.id]
+        );
+        if (vResult.rows.length > 0 && vResult.rows[0].verification_status !== 'verified') {
+          res.status(403).json({
+            success: false,
+            error: 'Your account must be verified to sell products. Please complete your farmer verification first.',
+          });
+          return;
+        }
+      }
 
       // Verify ownership
       const existing = await pool.query(

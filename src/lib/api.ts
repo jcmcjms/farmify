@@ -23,6 +23,10 @@ import type {
   AddTransactionBody,
   AddCartItemBody,
   UpdateCartItemBody,
+  VerificationStatus,
+  VerificationListItem,
+  FarmerProfile,
+  VerificationDocument,
 } from '@/types'
 
 const BASE_URL = '/api'
@@ -43,7 +47,7 @@ async function request<T>(
 ): Promise<T> {
   const token = getToken()
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
     ...(options.headers as Record<string, string> | undefined),
   }
 
@@ -95,6 +99,23 @@ export const authApi = {
     request<ApiResponse<User>>('/auth/me', {
       method: 'PUT',
       body: JSON.stringify(body),
+    }),
+
+  getVerification: () =>
+    request<ApiResponse<VerificationStatus>>('/auth/verification'),
+
+  submitVerification: (formData: FormData) =>
+    request<ApiResponse<VerificationStatus>>('/auth/verification', {
+      method: 'POST',
+      body: formData,
+      headers: {},
+    }),
+
+  resubmitVerification: (formData: FormData) =>
+    request<ApiResponse<VerificationStatus>>('/auth/verification', {
+      method: 'PUT',
+      body: formData,
+      headers: {},
     }),
 }
 
@@ -290,4 +311,18 @@ export const adminApi = {
     request<ApiResponse<Array<{ name: string; description: string; user_count: number; permissions: string[] }>>>('/admin/roles'),
   getStats: () =>
     request<ApiResponse<Record<string, number>>>('/admin/stats'),
+
+  getVerifications: (params?: Record<string, string>) => {
+    const query = params ? '?' + new URLSearchParams(params).toString() : ''
+    return request<ApiResponse<VerificationListItem[]> & { pagination: PaginationMeta }>(`/admin/verifications${query}`)
+  },
+  getVerificationDetail: (id: number) =>
+    request<ApiResponse<{ farmer: User; profile: FarmerProfile; documents: VerificationDocument[] }>>(`/admin/verifications/${id}`),
+  approveVerification: (id: number) =>
+    request<ApiResponse<void>>(`/admin/verifications/${id}/approve`, { method: 'PUT' }),
+  rejectVerification: (id: number, reason: string) =>
+    request<ApiResponse<void>>(`/admin/verifications/${id}/reject`, {
+      method: 'PUT',
+      body: JSON.stringify({ reason }),
+    }),
 }

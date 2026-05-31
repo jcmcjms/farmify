@@ -28,6 +28,8 @@ const Profile = lazy(() => import('@/pages/Profile'))
 const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard'))
 const AdminUsers = lazy(() => import('@/pages/admin/AdminUsers'))
 const AdminRoles = lazy(() => import('@/pages/admin/AdminRoles'))
+const FarmerVerification = lazy(() => import('@/pages/FarmerVerification'))
+const AdminVerifications = lazy(() => import('@/pages/admin/AdminVerifications'))
 
 /**
  * Wrap a component with Suspense for lazy loading.
@@ -221,6 +223,18 @@ export default function App() {
               }
             />
 
+            {/* Verification */}
+            <Route
+              path="/verification"
+              element={
+                <ProtectedRoute requiredRole="farmer">
+                  <SuspenseWrapper>
+                    <FarmerVerification />
+                  </SuspenseWrapper>
+                </ProtectedRoute>
+              }
+            />
+
             {/* Admin routes */}
             <Route
               path="/admin"
@@ -248,6 +262,16 @@ export default function App() {
                 <ProtectedRoute requiredRole="admin">
                   <SuspenseWrapper>
                     <AdminRoles />
+                  </SuspenseWrapper>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/verifications"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <SuspenseWrapper>
+                    <AdminVerifications />
                   </SuspenseWrapper>
                 </ProtectedRoute>
               }

@@ -13,6 +13,8 @@ import jobRoutes from './routes/jobs.js';
 import inventoryRoutes from './routes/inventory.js';
 import cartRoutes from './routes/cart.js';
 import adminRoutes from './routes/admin.js';
+import verificationRoutes from './routes/verification.js';
+import adminVerificationRoutes from './routes/adminVerifications.js';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '5000', 10);
@@ -33,6 +35,9 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Static file serving for uploads (verification documents, etc.)
+app.use('/uploads', express.static('uploads'));
+
 // ── Health Check ───────────────────────────────────────────────────────
 
 app.get('/api/health', (_req, res) => {
@@ -49,12 +54,14 @@ app.get('/api/health', (_req, res) => {
 // ── API Routes ─────────────────────────────────────────────────────────
 
 app.use('/api/auth', authRoutes);
+app.use('/api/auth', verificationRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/admin', adminVerificationRoutes);
 
 // ── 404 Handler ────────────────────────────────────────────────────────
 

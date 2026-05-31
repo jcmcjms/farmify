@@ -132,3 +132,47 @@ CREATE INDEX IF NOT EXISTS idx_jobs_category ON jobs(category);
 CREATE INDEX IF NOT EXISTS idx_jobs_active ON jobs(is_active);
 CREATE INDEX IF NOT EXISTS idx_inventory_farmer ON inventory_items(farmer_id);
 CREATE INDEX IF NOT EXISTS idx_cart_user ON cart_items(user_id);
+
+-- ── Farmer Verification System ─────────────────────────────────────────
+
+-- Add verification_status to users
+ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_status VARCHAR(50) DEFAULT 'unverified'
+  CHECK (verification_status IN ('unverified', 'pending', 'verified', 'rejected'));
+
+-- Farmer Profiles Table
+CREATE TABLE IF NOT EXISTS farmer_profiles (
+  id SERIAL PRIMARY KEY,
+  farmer_id INTEGER UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  farm_name VARCHAR(255),
+  farm_address TEXT,
+  farm_city VARCHAR(100),
+  farm_province VARCHAR(100),
+  farm_size_hectares DECIMAL(10, 2),
+  years_farming INTEGER,
+  crops_grown TEXT,
+  government_id_type VARCHAR(100),
+  cooperative_name VARCHAR(255),
+  verification_notes TEXT,
+  submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  reviewed_at TIMESTAMP,
+  reviewed_by INTEGER REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Verification Documents Table
+CREATE TABLE IF NOT EXISTS verification_documents (
+  id SERIAL PRIMARY KEY,
+  farmer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  document_type VARCHAR(100) NOT NULL,
+  file_path TEXT NOT NULL,
+  file_name VARCHAR(255),
+  mime_type VARCHAR(100),
+  file_size INTEGER,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_users_verification_status ON users(verification_status);
+CREATE INDEX IF NOT EXISTS idx_farmer_profiles_farmer ON farmer_profiles(farmer_id);
+CREATE INDEX IF NOT EXISTS idx_verification_docs_farmer ON verification_documents(farmer_id);

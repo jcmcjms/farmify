@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { PageSpinner } from '@/components/ui/spinner'
 import { Card, CardContent } from '@/components/ui/card'
 import { adminApi } from '@/lib/api'
-import { Users, Package, ShoppingBag, Briefcase, Sprout, Shield, ArrowRight } from 'lucide-react'
+import { Users, Package, ShoppingBag, Briefcase, Sprout, Shield, ArrowRight, BadgeCheck } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 
 interface AdminStats {
@@ -161,6 +161,22 @@ export default function AdminDashboard() {
                   <h3 className="font-semibold text-foreground">Roles &amp; Permissions</h3>
                   <p className="text-sm text-muted-foreground mt-0.5">
                     View role definitions, user counts, and the permissions granted to each role.
+                  </p>
+                </div>
+                <ArrowRight className="size-5 text-muted-foreground shrink-0" />
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/admin/verifications">
+            <Card className="transition-all hover:shadow-md hover:border-primary/50 cursor-pointer">
+              <CardContent className="p-6 flex items-center gap-4">
+                <div className="rounded-xl bg-amber-100 p-3 text-amber-600">
+                  <BadgeCheck className="size-6" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-foreground">Farmer Verifications</h3>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    Review and approve farmer verification documents.
                   </p>
                 </div>
                 <ArrowRight className="size-5 text-muted-foreground shrink-0" />

@@ -464,6 +464,14 @@ async function seed(): Promise<void> {
     const farmerIds = [userIds[1], userIds[2], userIds[3]];
     const buyerIds = [userIds[4], userIds[5]];
 
+    // Set farmer seed users as verified so existing functionality works
+    for (const farmerId of farmerIds) {
+      await client.query(
+        'UPDATE users SET verification_status = $1 WHERE id = $2',
+        ['verified', farmerId]
+      );
+    }
+
     // ── Seed Products ───────────────────────────────────────────────
     console.log('\n📦 Seeding products...');
     const productIds: number[] = [];

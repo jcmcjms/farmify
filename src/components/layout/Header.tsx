@@ -15,6 +15,7 @@ import {
   Briefcase,
   Warehouse,
   Shield,
+  BadgeCheck,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -115,6 +116,16 @@ export function Header() {
                         <LayoutDashboard className="size-4" />
                         Dashboard
                       </Link>
+                      {user?.role === 'farmer' && (
+                        <Link
+                          to="/verification"
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted transition-colors"
+                        >
+                          <BadgeCheck className="size-4" />
+                          Verification
+                        </Link>
+                      )}
                       <Link
                         to="/profile"
                         onClick={() => setDropdownOpen(false)}
@@ -217,6 +228,16 @@ export function Header() {
                 <LayoutDashboard className="size-4" />
                 Dashboard
               </Link>
+              {user?.role === 'farmer' && (
+                <Link
+                  to="/verification"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
+                >
+                  <BadgeCheck className="size-4" />
+                  Verification
+                </Link>
+              )}
               <Link
                 to="/profile"
                 onClick={() => setMobileOpen(false)}

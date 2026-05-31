@@ -174,6 +174,21 @@ export const jobController = {
     try {
       const data = createJobSchema.parse(req.body);
 
+      // If user is a farmer, check verification status
+      if (req.user!.role === 'farmer') {
+        const vResult = await pool.query(
+          'SELECT verification_status FROM users WHERE id = $1',
+          [req.user!.id]
+        );
+        if (vResult.rows.length > 0 && vResult.rows[0].verification_status !== 'verified') {
+          res.status(403).json({
+            success: false,
+            error: 'Your account must be verified to post jobs. Please complete your farmer verification first.',
+          });
+          return;
+        }
+      }
+
       const result = await pool.query(
         `INSERT INTO jobs (farmer_id, title, description, category, location, salary_min, salary_max, salary_type, employment_type, requirements, is_active)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
@@ -211,6 +226,21 @@ export const jobController = {
     try {
       const { id } = req.params;
       const data = updateJobSchema.parse(req.body);
+
+      // If user is a farmer, check verification status
+      if (req.user!.role === 'farmer') {
+        const vResult = await pool.query(
+          'SELECT verification_status FROM users WHERE id = $1',
+          [req.user!.id]
+        );
+        if (vResult.rows.length > 0 && vResult.rows[0].verification_status !== 'verified') {
+          res.status(403).json({
+            success: false,
+            error: 'Your account must be verified to post jobs. Please complete your farmer verification first.',
+          });
+          return;
+        }
+      }
 
       // Verify ownership
       const existing = await pool.query(
