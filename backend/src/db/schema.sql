@@ -1,0 +1,134 @@
+-- Farmify Database Schema
+-- PostgreSQL Database for Farmer Platform
+
+-- Users Table
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  role VARCHAR(50) DEFAULT 'farmer' CHECK (role IN ('farmer', 'buyer', 'admin')),
+  phone VARCHAR(50),
+  address TEXT,
+  avatar_url TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Products Table (E-commerce)
+CREATE TABLE IF NOT EXISTS products (
+  id SERIAL PRIMARY KEY,
+  farmer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  category VARCHAR(100) NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
+  unit VARCHAR(50) DEFAULT 'kg',
+  quantity DECIMAL(10, 2) NOT NULL DEFAULT 0,
+  image_url TEXT,
+  is_organic BOOLEAN DEFAULT FALSE,
+  is_available BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Orders Table
+CREATE TABLE IF NOT EXISTS orders (
+  id SERIAL PRIMARY KEY,
+  buyer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'shipped', 'delivered', 'cancelled')),
+  total_amount DECIMAL(10, 2) NOT NULL,
+  shipping_address TEXT,
+  payment_method VARCHAR(100),
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Order Items Table
+CREATE TABLE IF NOT EXISTS order_items (
+  id SERIAL PRIMARY KEY,
+  order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  quantity DECIMAL(10, 2) NOT NULL,
+  unit_price DECIMAL(10, 2) NOT NULL,
+  subtotal DECIMAL(10, 2) NOT NULL
+);
+
+-- Cart Items Table
+CREATE TABLE IF NOT EXISTS cart_items (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  quantity DECIMAL(10, 2) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(user_id, product_id)
+);
+
+-- Jobs Table (Job Portal)
+CREATE TABLE IF NOT EXISTS jobs (
+  id SERIAL PRIMARY KEY,
+  farmer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  category VARCHAR(100) NOT NULL,
+  location VARCHAR(255),
+  salary_min DECIMAL(10, 2),
+  salary_max DECIMAL(10, 2),
+  salary_type VARCHAR(50) DEFAULT 'fixed' CHECK (salary_type IN ('fixed', 'daily', 'hourly', 'negotiable')),
+  employment_type VARCHAR(50) DEFAULT 'full-time' CHECK (employment_type IN ('full-time', 'part-time', 'seasonal', 'contract', 'temporary')),
+  requirements TEXT,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Job Applications Table
+CREATE TABLE IF NOT EXISTS job_applications (
+  id SERIAL PRIMARY KEY,
+  job_id INTEGER NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+  applicant_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  cover_letter TEXT,
+  status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('pending', 'reviewed', 'shortlisted', 'accepted', 'rejected')),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(job_id, applicant_id)
+);
+
+-- Inventory Items Table
+CREATE TABLE IF NOT EXISTS inventory_items (
+  id SERIAL PRIMARY KEY,
+  farmer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  category VARCHAR(100) NOT NULL,
+  quantity DECIMAL(10, 2) NOT NULL DEFAULT 0,
+  unit VARCHAR(50) DEFAULT 'units',
+  min_quantity DECIMAL(10, 2) DEFAULT 0,
+  unit_cost DECIMAL(10, 2) DEFAULT 0,
+  supplier VARCHAR(255),
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Inventory Transactions Table
+CREATE TABLE IF NOT EXISTS inventory_transactions (
+  id SERIAL PRIMARY KEY,
+  item_id INTEGER NOT NULL REFERENCES inventory_items(id) ON DELETE CASCADE,
+  type VARCHAR(50) NOT NULL CHECK (type IN ('in', 'out', 'adjustment')),
+  quantity DECIMAL(10, 2) NOT NULL,
+  reference_type VARCHAR(100),
+  reference_id INTEGER,
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create Indexes
+CREATE INDEX IF NOT EXISTS idx_products_farmer ON products(farmer_id);
+CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
+CREATE INDEX IF NOT EXISTS idx_orders_buyer ON orders(buyer_id);
+CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
+CREATE INDEX IF NOT EXISTS idx_jobs_farmer ON jobs(farmer_id);
+CREATE INDEX IF NOT EXISTS idx_jobs_category ON jobs(category);
+CREATE INDEX IF NOT EXISTS idx_jobs_active ON jobs(is_active);
+CREATE INDEX IF NOT EXISTS idx_inventory_farmer ON inventory_items(farmer_id);
+CREATE INDEX IF NOT EXISTS idx_cart_user ON cart_items(user_id);
