@@ -8,6 +8,7 @@ export interface User {
   phone?: string | null;
   address?: string | null;
   avatar_url?: string | null;
+  verification_status?: string | null;
   created_at: string;
 }
 

@@ -117,6 +117,7 @@ export const adminVerificationController = {
         phone: row.phone,
         address: row.address,
         role: row.role,
+        verification_status: row.verification_status,
         created_at: row.user_created_at,
       };
 

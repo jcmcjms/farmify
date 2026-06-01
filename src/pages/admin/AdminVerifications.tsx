@@ -222,7 +222,7 @@ export default function AdminVerifications() {
                   </span>
                 </div>
               </div>
-              {statusBadge(detail.profile ? 'pending' : 'unverified')}
+              {statusBadge(detail.farmer.verification_status || (detail.profile ? 'pending' : 'unverified'))}
             </div>
           </CardContent>
         </Card>
@@ -341,8 +341,8 @@ export default function AdminVerifications() {
           </Card>
         )}
 
-        {/* Action Buttons */}
-        {detail.profile && (
+        {/* Action Buttons — only show for pending verifications */}
+        {detail.profile && detail.farmer.verification_status === 'pending' && (
           <div className="flex items-center gap-3">
             <Button
               variant="default"
