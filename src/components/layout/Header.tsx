@@ -14,7 +14,6 @@ import {
   Package,
   Briefcase,
   Warehouse,
-  Shield,
   BadgeCheck,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -134,19 +133,6 @@ export function Header() {
                         <User className="size-4" />
                         Profile
                       </Link>
-                      {user?.role === 'admin' && (
-                        <>
-                          <Link
-                            to="/admin"
-                            onClick={() => setDropdownOpen(false)}
-                            className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted transition-colors"
-                          >
-                            <Shield className="size-4" />
-                            Admin Panel
-                          </Link>
-                          <hr className="my-1 border-border" />
-                        </>
-                      )}
                       <hr className="my-1 border-border" />
                       <button
                         onClick={handleLogout}
@@ -246,16 +232,6 @@ export function Header() {
                 <User className="size-4" />
                 Profile
               </Link>
-              {user?.role === 'admin' && (
-                <Link
-                  to="/admin"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
-                >
-                  <Shield className="size-4" />
-                  Admin Panel
-                </Link>
-              )}
               {!isFarmer && (
                 <Link
                   to="/cart"
