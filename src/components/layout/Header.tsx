@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import {
@@ -34,6 +34,7 @@ const farmerLinks = [
 export function Header() {
   const { user, isAuthenticated, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
@@ -62,6 +63,7 @@ export function Header() {
               key={link.href}
               to={link.href}
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              aria-current={location.pathname === link.href ? 'page' : undefined}
             >
               {link.label}
             </Link>

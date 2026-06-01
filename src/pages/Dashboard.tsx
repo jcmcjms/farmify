@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { PageSpinner } from '@/components/ui/spinner'
+import { Skeleton } from '@/components/ui/skeleton'
+import { StatCardSkeleton } from '@/components/ui/skeleton'
 import { dashboardApi, authApi } from '@/lib/api'
 import { Sprout, Package, Briefcase, Warehouse, ShoppingBag, ArrowRight, Plus, Clock, AlertTriangle } from 'lucide-react'
 
@@ -67,7 +68,17 @@ export default function Dashboard() {
     fetchVerification()
   }, [isAuthenticated, navigate, user?.role])
 
-  if (loading) return <PageSpinner text="Loading dashboard..." />
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
+        <Skeleton className="h-8 w-64 mb-1" />
+        <Skeleton className="h-4 w-96 mb-8" />
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-10">
+          {Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)}
+        </div>
+      </div>
+    )
+  }
 
   const isFarmer = user?.role === 'farmer'
 
@@ -149,7 +160,7 @@ export default function Dashboard() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
       {/* Welcome */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">
+        <h1 className="text-3xl font-bold text-foreground font-display">
           Welcome back, {user?.name?.split(' ')[0] || 'Farmer'}!
         </h1>
         <p className="mt-1 text-muted-foreground">

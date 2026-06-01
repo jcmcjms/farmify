@@ -5,11 +5,13 @@ import { useCart } from '@/context/CartContext'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { PageSpinner } from '@/components/ui/spinner'
+import { DetailPageSkeleton } from '@/components/ui/skeleton'
+import { Breadcrumb, type BreadcrumbItem } from '@/components/ui/breadcrumb'
 import { Separator } from '@/components/ui/separator'
 import { productsApi } from '@/lib/api'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import type { Product } from '@/types'
-import { Leaf, ShoppingCart, Minus, Plus, ArrowLeft, Package } from 'lucide-react'
+import { Leaf, ShoppingCart, Minus, Plus, ArrowLeft, Package, LogIn } from 'lucide-react'
 
 /**
  * Product detail — full view of a single product.
@@ -47,7 +49,7 @@ export default function ProductDetail() {
     fetchProduct()
   }, [id])
 
-  if (loading) return <PageSpinner text="Loading product..." />
+  if (loading) return <DetailPageSkeleton />
 
   if (error) {
     return (
@@ -67,11 +69,17 @@ export default function ProductDetail() {
 
   if (!product) return null
 
+  const breadcrumbs: BreadcrumbItem[] = [
+    { label: 'Marketplace', href: '/marketplace' },
+    { label: product.category ? product.category.charAt(0).toUpperCase() + product.category.slice(1) : 'Product', href: `/marketplace?category=${product.category}` },
+    { label: product.name },
+  ]
+
   const isAvailable = product.is_available && product.quantity > 0
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
-      navigate('/login')
+      navigate('/login?redirect=products/' + id)
       return
     }
     setAdding(true)
@@ -87,14 +95,24 @@ export default function ProductDetail() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
-      {/* Back button */}
-      <button
-        onClick={() => navigate('/marketplace')}
-        className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <ArrowLeft className="size-4" />
-        Back to Marketplace
-      </button>
+      {/* Breadcrumbs */}
+      <Breadcrumb items={breadcrumbs} />
+
+      {/* Auth hint for unauthenticated users */}
+      {!isAuthenticated && (
+        <div className="mb-6 flex items-center gap-2 rounded-md bg-blue-50 border border-blue-200 p-3 text-sm text-blue-800">
+          <LogIn className="size-4 shrink-0" />
+          <span>
+            <strong>Sign in</strong> to add this product to your cart.{' '}
+            <button
+              onClick={() => navigate('/login?redirect=products/' + id)}
+              className="underline font-medium hover:text-blue-900"
+            >
+              Login here
+            </button>
+          </span>
+        </div>
+      )}
 
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Image */}
@@ -130,7 +148,7 @@ export default function ProductDetail() {
             )}
           </div>
 
-          <h1 className="text-3xl font-bold text-foreground">{product.name}</h1>
+          <h1 className="text-3xl font-bold text-foreground font-display">{product.name}</h1>
 
           <p className="mt-1 text-sm text-muted-foreground">
             by {product.farmer_name || `Farmer #${product.farmer_id}`}

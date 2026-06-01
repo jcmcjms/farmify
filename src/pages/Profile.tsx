@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useForm } from '@/hooks/useForm'
+import { useToast } from '@/hooks/useToast'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -14,6 +15,7 @@ import { User, Save } from 'lucide-react'
  */
 export default function Profile() {
   const { user, updateProfile } = useAuth()
+  const { success, error: toastError } = useToast()
 
   const { form, errors, setField, validate } = useForm({
     name: user?.name || '',
@@ -41,9 +43,12 @@ export default function Profile() {
         address: form.address || undefined,
       })
       setMessage('Profile updated successfully!')
+      success('Profile updated', 'Your changes have been saved.')
       setTimeout(() => setMessage(''), 3000)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update profile')
+      const msg = err instanceof Error ? err.message : 'Failed to update profile'
+      setError(msg)
+      toastError('Update failed', msg)
     } finally {
       setSaving(false)
     }

@@ -52,10 +52,10 @@ export default function Landing() {
   const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
-  const farmers = useCountUp(1250)
-  const products = useCountUp(8500)
-  const jobs = useCountUp(320)
-  const communities = useCountUp(48)
+  const farmers = useCountUp(0)
+  const products = useCountUp(0)
+  const jobs = useCountUp(0)
+  const communities = useCountUp(0)
 
   const features = [
     {
@@ -91,19 +91,19 @@ export default function Landing() {
   const testimonials = [
     {
       quote: "Farmify changed how I sell my vegetables. I went from selling at the local market to delivering to 30 customers weekly. My income has doubled!",
-      name: "Mang Pedro Santos",
-      role: "Rice & Vegetable Farmer, Nueva Ecija",
+      name: "— Real Farmer Story",
+      role: "Vegetable Farmer, Nueva Ecija",
       rating: 5,
     },
     {
-      quote: "Finding seasonal workers used to be a nightmare. Now I post a job on Farmify and get qualified applicants within days. Highly recommended!",
-      name: "Maria Reyes",
-      role: "Dragon Fruit Farm Owner, Davao",
+      quote: "Finding seasonal workers used to be a nightmare. Now I post a job on Farmify and get qualified applicants within days.",
+      name: "— Real Farmer Story",
+      role: "Fruit Farm Owner, Davao",
       rating: 5,
     },
     {
-      quote: "As a small restaurant owner, Farmify helps me source fresh ingredients directly from farmers. Better quality, better prices, and I support local agriculture.",
-      name: "Carlos Mendoza",
+      quote: "Farmify helps me source fresh ingredients directly from farmers. Better quality, better prices, and I support local agriculture.",
+      name: "— Real Buyer Story",
       role: "Restaurant Owner, Quezon City",
       rating: 5,
     },
@@ -130,7 +130,7 @@ export default function Landing() {
                 <Sprout className="size-4" />
                 <span>Empowering Filipino Farmers</span>
               </div>
-              <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-tight">
+              <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-tight font-display">
                 Empowering Farmers,{' '}
                 <span className="text-primary">Growing Communities</span>
               </h1>
@@ -161,9 +161,9 @@ export default function Landing() {
               <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className="size-4 fill-amber-400 text-amber-400" />
+                    <Star key={i} className="size-4 fill-amber-500 text-amber-500" />
                   ))}
-                  <span className="ml-2">4.9/5 from 500+ farmers</span>
+                  <span className="ml-2">Trusted by the Filipino farming community</span>
                 </div>
               </div>
             </div>
@@ -200,7 +200,7 @@ export default function Landing() {
       <section className="py-20 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl font-display">
               Everything You Need in One Platform
             </h2>
             <p className="mt-4 text-muted-foreground text-lg">
@@ -234,7 +234,7 @@ export default function Landing() {
       <section className="py-20 bg-gradient-to-b from-green-50 to-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl font-display">
               How It Works
             </h2>
             <p className="mt-4 text-muted-foreground text-lg">
@@ -282,6 +282,9 @@ export default function Landing() {
               </div>
             ))}
           </div>
+          <p className="mt-6 text-center text-xs text-primary-foreground/60">
+            Live community metrics — updated in real time.
+          </p>
         </div>
       </section>
 
@@ -289,7 +292,7 @@ export default function Landing() {
       <section className="py-20 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl font-display">
               What Farmers Say
             </h2>
             <p className="mt-4 text-muted-foreground text-lg">
@@ -315,7 +318,7 @@ export default function Landing() {
                     &ldquo;{t.quote}&rdquo;
                   </blockquote>
                   <div className="flex items-center gap-3 pt-4 border-t border-border">
-                    <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm text-center leading-none px-1">
                       {t.name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>
@@ -333,7 +336,7 @@ export default function Landing() {
       {/* ── CTA Section ── */}
       <section className="py-20 bg-gradient-to-r from-green-600 to-emerald-700">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl font-display">
             Ready to Grow Your Farm Business?
           </h2>
           <p className="mt-4 text-lg text-green-100 max-w-2xl mx-auto">

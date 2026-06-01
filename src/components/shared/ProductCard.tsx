@@ -21,22 +21,22 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
   return (
     <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       {/* Image */}
-      <Link to={`/products/${product.id}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+      <Link to={`/products/${product.id}`} className="block" aria-label={`View ${product.name}`}>
+        <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-green-50 to-muted">
           {product.image_url ? (
             <img
               src={product.image_url}
               alt={product.name}
-              className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className="size-full object-cover transition-all duration-500 group-hover:scale-105"
               loading="lazy"
             />
           ) : (
-            <div className="flex size-full items-center justify-center">
-              <Leaf className="size-12 text-muted-foreground/40" />
+            <div className="flex size-full items-center justify-center" aria-label={`${product.name} image placeholder`}>
+              <Leaf className="size-12 text-primary/20 transition-transform duration-300 group-hover:scale-110" />
             </div>
           )}
 
-          {/* Badges */}
+          {/* Badges — semantic labels */}
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {product.is_organic && (
               <Badge variant="success" className="text-[10px]">
@@ -50,6 +50,11 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
               </Badge>
             )}
           </div>
+          {!product.is_available && (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <Badge variant="danger" className="text-xs">Unavailable</Badge>
+            </div>
+          )}
         </div>
       </Link>
 
@@ -69,7 +74,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
         {/* Description */}
         {product.description && (
-          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+          <p className="text-xs text-muted-foreground mt-1 line-clamp-2" title={product.description}>
             {product.description}
           </p>
         )}

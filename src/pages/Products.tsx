@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useCart } from '@/context/CartContext'
 import { ProductCard } from '@/components/shared/ProductCard'
@@ -7,9 +7,10 @@ import { PageHeader, ErrorBanner, EmptyState, Pagination } from '@/components/sh
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { PageSpinner } from '@/components/ui/spinner'
+import { ProductCardSkeleton } from '@/components/ui/skeleton'
 import { productsApi } from '@/lib/api'
 import type { Product } from '@/types'
-import { Search, Package } from 'lucide-react'
+import { Search, Package, LogIn } from 'lucide-react'
 
 const categoryOptions = [
   { value: '', label: 'All Categories' },
@@ -40,6 +41,7 @@ export default function Products() {
   const [category, setCategory] = useState('')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [searchParams] = useSearchParams()
 
   const fetchProducts = useCallback(async () => {
     setLoading(true)
@@ -66,7 +68,7 @@ export default function Products() {
 
   const handleAddToCart = async (product: Product) => {
     if (!isAuthenticated) {
-      navigate('/login')
+      navigate('/login?redirect=marketplace')
       return
     }
     try {
@@ -86,6 +88,22 @@ export default function Products() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
       {/* Header */}
       <PageHeader title="Marketplace" description="Browse fresh produce and farm supplies from local farmers." />
+
+      {/* Auth hint for unauthenticated users */}
+      {!isAuthenticated && (
+        <div className="mb-6 flex items-center gap-2 rounded-md bg-blue-50 border border-blue-200 p-3 text-sm text-blue-800">
+          <LogIn className="size-4 shrink-0" />
+          <span>
+            <strong>Sign in</strong> to add items to your cart and purchase products.{' '}
+            <button
+              onClick={() => navigate('/login?redirect=marketplace')}
+              className="underline font-medium hover:text-blue-900"
+            >
+              Login here
+            </button>
+          </span>
+        </div>
+      )}
 
       {/* Search & Filter */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row">
@@ -116,8 +134,14 @@ export default function Products() {
       {/* Error */}
       {error && <ErrorBanner message={error} onRetry={fetchProducts} />}
 
-      {/* Loading */}
-      {loading && <PageSpinner text="Loading products..." />}
+      {/* Loading — skeleton grid */}
+      {loading && (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
+          ))}
+        </div>
+      )}
 
       {/* Empty state */}
       {!loading && !error && products.length === 0 && (

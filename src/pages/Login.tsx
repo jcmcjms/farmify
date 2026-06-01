@@ -14,18 +14,20 @@ export default function Login() {
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  const { form, errors, setField, validate } = useForm({ email: '', password: '' })
+  const { form, errors, setField, validate, validateField } = useForm({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const rules = {
+    email: (v: string) => !v ? 'Email is required' : !/\S+@\S+\.\S+/.test(v) ? 'Invalid email format' : undefined,
+    password: (v: string) => !v ? 'Password is required' : v.length < 6 ? 'Password must be at least 6 characters' : undefined,
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
 
-    if (!validate({
-      email: (v) => !v ? 'Email is required' : !/\S+@\S+\.\S+/.test(v) ? 'Invalid email format' : undefined,
-      password: (v) => !v ? 'Password is required' : v.length < 6 ? 'Password must be at least 6 characters' : undefined,
-    })) return
+    if (!validate(rules)) return
 
     setLoading(true)
     try {
@@ -60,7 +62,7 @@ export default function Login() {
 
         <Card>
           <CardHeader className="text-center">
-            <CardTitle>Welcome Back</CardTitle>
+            <CardTitle className="font-display">Welcome Back</CardTitle>
             <CardDescription>Sign in to your Farmify account</CardDescription>
           </CardHeader>
           <CardContent>
@@ -78,6 +80,7 @@ export default function Login() {
                 placeholder="farmer@example.com"
                 value={form.email}
                 onChange={(e) => setField('email', e.target.value)}
+                onBlur={() => validateField(rules, 'email')}
                 error={errors.email}
                 autoComplete="email"
               />
@@ -88,6 +91,7 @@ export default function Login() {
                 placeholder="Enter your password"
                 value={form.password}
                 onChange={(e) => setField('password', e.target.value)}
+                onBlur={() => validateField(rules, 'password')}
                 error={errors.password}
                 autoComplete="current-password"
               />

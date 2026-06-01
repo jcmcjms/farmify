@@ -1,6 +1,7 @@
 import { Routes, Route, Outlet } from 'react-router-dom'
 import { AuthProvider } from '@/context/AuthContext'
 import { CartProvider } from '@/context/CartContext'
+import { ToastProvider } from '@/context/ToastContext'
 import { Layout } from '@/components/layout/Layout'
 import { AdminLayout } from '@/components/layout/AdminLayout'
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
@@ -32,6 +33,7 @@ const AdminUsers = lazy(() => import('@/pages/admin/AdminUsers'))
 const AdminRoles = lazy(() => import('@/pages/admin/AdminRoles'))
 const FarmerVerification = lazy(() => import('@/pages/FarmerVerification'))
 const AdminVerifications = lazy(() => import('@/pages/admin/AdminVerifications'))
+const NotFound = lazy(() => import('@/pages/NotFound'))
 
 /**
  * Wrap a component with Suspense for lazy loading.
@@ -47,6 +49,7 @@ export default function App() {
   return (
     <AuthProvider>
       <CartProvider>
+        <ToastProvider>
         <Layout>
           <ErrorBoundary>
           <Routes>
@@ -286,24 +289,15 @@ export default function App() {
             <Route
               path="*"
               element={
-                <div className="flex min-h-[60vh] flex-col items-center justify-center text-center px-4">
-                  <h1 className="text-6xl font-bold text-muted-foreground/30">404</h1>
-                  <h2 className="mt-4 text-xl font-semibold">Page Not Found</h2>
-                  <p className="mt-2 text-muted-foreground">
-                    The page you&apos;re looking for doesn&apos;t exist or has been moved.
-                  </p>
-                  <a
-                    href="/"
-                    className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-                  >
-                    Go Home
-                  </a>
-                </div>
+                <SuspenseWrapper>
+                  <NotFound />
+                </SuspenseWrapper>
               }
             />
           </Routes>
           </ErrorBoundary>
         </Layout>
+        </ToastProvider>
       </CartProvider>
     </AuthProvider>
   )

@@ -20,7 +20,7 @@ export default function Register() {
   const { register } = useAuth()
   const navigate = useNavigate()
 
-  const { form, errors, setField, validate } = useForm({
+  const { form, errors, setField, setFields, validate, validateField } = useForm({
     name: '',
     email: '',
     password: '',
@@ -31,17 +31,19 @@ export default function Register() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  const rules = {
+    name: (v: string) => !v?.trim() ? 'Name is required' : undefined,
+    email: (v: string) => !v?.trim() ? 'Email is required' : !/\S+@\S+\.\S+/.test(v) ? 'Invalid email format' : undefined,
+    password: (v: string) => !v ? 'Password is required' : v.length < 6 ? 'Password must be at least 6 characters' : undefined,
+    confirmPassword: (v: string, f: Record<string, unknown>) => !f.confirmPassword ? 'Please confirm your password' : f.password !== f.confirmPassword ? 'Passwords do not match' : undefined,
+    role: (v: string) => !v ? 'Please select a role' : undefined,
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
 
-    if (!validate({
-      name: (v) => !v?.trim() ? 'Name is required' : undefined,
-      email: (v) => !v?.trim() ? 'Email is required' : !/\S+@\S+\.\S+/.test(v) ? 'Invalid email format' : undefined,
-      password: (v) => !v ? 'Password is required' : v.length < 6 ? 'Password must be at least 6 characters' : undefined,
-      confirmPassword: (_, f) => !f.confirmPassword ? 'Please confirm your password' : f.password !== f.confirmPassword ? 'Passwords do not match' : undefined,
-      role: (v) => !v ? 'Please select a role' : undefined,
-    })) return
+    if (!validate(rules)) return
 
     setLoading(true)
     try {
@@ -73,7 +75,7 @@ export default function Register() {
 
         <Card>
           <CardHeader className="text-center">
-            <CardTitle>Create Your Account</CardTitle>
+            <CardTitle className="font-display">Create Your Account</CardTitle>
             <CardDescription>Join Farmify and start growing</CardDescription>
           </CardHeader>
           <CardContent>
@@ -127,6 +129,7 @@ export default function Register() {
                 placeholder="At least 6 characters"
                 value={form.password}
                 onChange={(e) => setField('password', e.target.value)}
+                onBlur={() => validateField(rules, 'password')}
                 error={errors.password}
                 autoComplete="new-password"
               />
@@ -137,6 +140,7 @@ export default function Register() {
                 placeholder="Repeat your password"
                 value={form.confirmPassword}
                 onChange={(e) => setField('confirmPassword', e.target.value)}
+                onBlur={() => validateField(rules, 'confirmPassword')}
                 error={errors.confirmPassword}
                 autoComplete="new-password"
               />

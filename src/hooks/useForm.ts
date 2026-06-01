@@ -16,6 +16,9 @@ type ValidationRules<T extends Record<string, unknown>> = {
   [K in keyof T]?: ValidationRule<T, K>
 }
 
+/** @internal */
+type RulesRef<T extends Record<string, unknown>> = ValidationRules<T> | null
+
 /**
  * Return type of the `useForm` hook.
  */
@@ -32,6 +35,8 @@ interface UseFormReturn<T extends Record<string, unknown>> {
   setForm: (form: T) => void
   /** Run all validation rules. Returns `true` if the form passes. */
   validate: (rules: ValidationRules<T>) => boolean
+  /** Validate a single field (useful for onBlur). Requires rules to have been passed to validate() first. */
+  validateField: (rules: ValidationRules<T>, field: keyof T) => string | undefined
   /** Clear all validation errors. */
   clearErrors: () => void
   /** Clear the error for a single field. */
@@ -73,6 +78,7 @@ export function useForm<T extends Record<string, unknown>>(
 ): UseFormReturn<T> {
   const [form, setFormState] = useState<T>(initialValues)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const rulesRef = useRef<RulesRef>(null)
 
   // Keep a ref of initial values so resetForm can restore them
   const initialRef = useRef<T>(initialValues)
@@ -110,6 +116,29 @@ export function useForm<T extends Record<string, unknown>>(
     setFormState(newForm)
     setErrors({})
   }, [])
+
+  /**
+   * Validate a single field against the given rules.
+   * Returns the error string if invalid, or undefined if valid.
+   */
+  const validateField = useCallback(
+    (rules: ValidationRules<T>, field: keyof T): string | undefined => {
+      const rule = rules[field]
+      if (!rule) return undefined
+      const error = rule(form[field], form)
+      setErrors((prev) => {
+        const next = { ...prev }
+        if (error !== undefined) {
+          next[field as string] = error
+        } else {
+          delete next[field as string]
+        }
+        return next
+      })
+      return error
+    },
+    [form]
+  )
 
   /**
    * Run all validation rules.
@@ -162,6 +191,7 @@ export function useForm<T extends Record<string, unknown>>(
     setFields,
     setForm,
     validate,
+    validateField,
     clearErrors,
     clearFieldError,
     resetForm,

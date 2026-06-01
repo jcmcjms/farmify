@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
@@ -22,14 +22,22 @@ const navItems = [
   { href: '/admin/verifications', label: 'Verifications', icon: BadgeCheck },
 ]
 
+interface AdminSidebarProps {
+  onCollapse?: (collapsed: boolean) => void
+}
+
 /**
  * Collapsible admin sidebar with navigation links and user info.
  */
-export function AdminSidebar() {
+export function AdminSidebar({ onCollapse }: AdminSidebarProps) {
   const { user, logout } = useAuth()
   const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => {
+    onCollapse?.(collapsed)
+  }, [collapsed, onCollapse])
   const [profileOpen, setProfileOpen] = useState(false)
 
   const isActive = (href: string, exact?: boolean) => {

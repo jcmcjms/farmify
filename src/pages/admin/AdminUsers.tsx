@@ -277,11 +277,31 @@ export default function AdminUsers() {
                 Password has been reset successfully.
               </p>
               <p className="text-sm text-green-700 mb-1">New temporary password:</p>
-              <div className="bg-white rounded border border-green-300 px-3 py-2 font-mono text-sm select-all">
-                {resetResult.password}
+              <div className="relative">
+                <input
+                  type="password"
+                  readOnly
+                  value={resetResult.password}
+                  className="w-full rounded border border-green-300 bg-white px-3 py-2 font-mono text-sm select-all"
+                  id="reset-password-field"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const input = document.getElementById('reset-password-field') as HTMLInputElement
+                    if (input) {
+                      input.type = 'text'
+                      navigator.clipboard.writeText(resetResult.password)
+                      setTimeout(() => { input.type = 'password' }, 3000)
+                    }
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-green-700 hover:text-green-800 font-medium underline"
+                >
+                  Reveal & Copy
+                </button>
               </div>
               <p className="text-xs text-green-600 mt-2">
-                Copy this password now. It will not be shown again.
+                Password is hidden by default. Click "Reveal &amp; Copy" to show and copy it — it auto-hides after 3 seconds.
               </p>
             </div>
             <Button className="w-full" onClick={() => setResetResult(null)}>
