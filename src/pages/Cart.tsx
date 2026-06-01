@@ -28,8 +28,11 @@ export default function Cart() {
     setError('')
     try {
       const res = await cartApi.getCart()
-      if (res.data) {
+      if (res.data && Array.isArray(res.data)) {
         setItems(res.data)
+      } else if (res.data && !Array.isArray(res.data)) {
+        // API returned unexpected format — show error instead of crashing
+        setError('Could not load cart data. Please try again.')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load cart')
@@ -69,7 +72,8 @@ export default function Cart() {
     }
   }
 
-  const subtotal = items.reduce((sum, item) => {
+  const cartItems = Array.isArray(items) ? items : []
+  const subtotal = cartItems.reduce((sum, item) => {
     return sum + (item.product?.price ?? 0) * item.quantity
   }, 0)
 
@@ -86,7 +90,7 @@ export default function Cart() {
 
       {error && <ErrorBanner message={error} onRetry={fetchCart} />}
 
-      {!loading && items.length === 0 && (
+      {!loading && cartItems.length === 0 && (
         <EmptyState
           icon={Package}
           title="Your cart is empty"
@@ -95,11 +99,11 @@ export default function Cart() {
         />
       )}
 
-      {items.length > 0 && (
+      {cartItems.length > 0 && (
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
-            {items.map((item) => (
+            {cartItems.map((item) => (
               <Card key={item.id} className={updatingId === item.id ? 'opacity-60' : ''}>
                 <CardContent className="flex items-center gap-4 p-4">
                   {/* Product image */}
@@ -179,7 +183,7 @@ export default function Cart() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal ({items.length} items)</span>
+                  <span className="text-muted-foreground">Subtotal ({cartItems.length} items)</span>
                   <span className="font-medium">{formatCurrency(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm">

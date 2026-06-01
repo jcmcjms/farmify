@@ -301,9 +301,9 @@ export default function Landing() {
           </div>
 
           <div className="grid gap-8 md:grid-cols-3">
-            {testimonials.map((t, i) => (
+              {testimonials.map((t, i) => (
               <Card
-                key={t.name}
+                key={`testimonial-${i}`}
                 className="animate-slide-up border-0 shadow-md"
                 style={{ animationDelay: `${i * 150}ms`, animationFillMode: 'both' }}
               >

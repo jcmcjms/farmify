@@ -28,7 +28,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
     try {
       const res = await cartApi.getCart()
-      if (res.data) {
+      if (res.data && Array.isArray(res.data)) {
         setItemCount(res.data.reduce((sum, item) => sum + item.quantity, 0))
       }
     } catch {
