@@ -122,25 +122,25 @@ export default function AdminUsers() {
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <input
+          <Input
             type="text"
             placeholder="Search by name or email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex h-9 w-full rounded-md border border-input bg-background pl-9 pr-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="pl-9"
           />
         </div>
         <div className="w-full sm:w-44">
-          <select
+          <Select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          >
-            <option value="all">All Roles</option>
-            <option value="admin">Admin</option>
-            <option value="farmer">Farmer</option>
-            <option value="buyer">Buyer</option>
-          </select>
+            options={[
+              { value: 'all', label: 'All Roles' },
+              { value: 'admin', label: 'Admin' },
+              { value: 'farmer', label: 'Farmer' },
+              { value: 'buyer', label: 'Buyer' },
+            ]}
+          />
         </div>
       </div>
 

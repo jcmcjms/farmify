@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
+import { useForm } from '@/hooks/useForm'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -13,31 +14,22 @@ export default function Login() {
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const { form, errors, setField, validate } = useForm({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [validation, setValidation] = useState<Record<string, string>>({})
-
-  const validate = () => {
-    const errs: Record<string, string> = {}
-    if (!email.trim()) errs.email = 'Email is required'
-    else if (!/\S+@\S+\.\S+/.test(email)) errs.email = 'Invalid email format'
-    if (!password) errs.password = 'Password is required'
-    else if (password.length < 6) errs.password = 'Password must be at least 6 characters'
-    setValidation(errs)
-    return Object.keys(errs).length === 0
-  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
 
-    if (!validate()) return
+    if (!validate({
+      email: (v) => !v ? 'Email is required' : !/\S+@\S+\.\S+/.test(v) ? 'Invalid email format' : undefined,
+      password: (v) => !v ? 'Password is required' : v.length < 6 ? 'Password must be at least 6 characters' : undefined,
+    })) return
 
     setLoading(true)
     try {
-      await login({ email, password })
+      await login({ email: form.email, password: form.password })
       // Redirect based on role — admin goes to admin panel, others to dashboard
       const storedUser = localStorage.getItem('farmify_user')
       if (storedUser) {
@@ -84,9 +76,9 @@ export default function Login() {
                 label="Email"
                 type="email"
                 placeholder="farmer@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                error={validation.email}
+                value={form.email}
+                onChange={(e) => setField('email', e.target.value)}
+                error={errors.email}
                 autoComplete="email"
               />
 
@@ -94,9 +86,9 @@ export default function Login() {
                 label="Password"
                 type="password"
                 placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                error={validation.password}
+                value={form.password}
+                onChange={(e) => setField('password', e.target.value)}
+                error={errors.password}
                 autoComplete="current-password"
               />
 

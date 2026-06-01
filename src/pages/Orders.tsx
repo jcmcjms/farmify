@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Select } from '@/components/ui/select'
 import { PageSpinner } from '@/components/ui/spinner'
+import { PageHeader, ErrorBanner, EmptyState, Pagination } from '@/components/shared'
 import { ordersApi } from '@/lib/api'
 import { formatCurrency, formatDate, getStatusColor } from '@/lib/utils'
 import type { Order } from '@/types'
@@ -59,16 +59,10 @@ export default function Orders() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            {isFarmer ? 'Orders Received' : 'My Orders'}
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            {isFarmer ? 'Orders placed for your products.' : 'Track your purchases.'}
-          </p>
-        </div>
+      <PageHeader
+        title={isFarmer ? 'Orders Received' : 'My Orders'}
+        description={isFarmer ? 'Orders placed for your products.' : 'Track your purchases.'}
+      >
         <div className="w-full sm:w-48">
           <Select
             value={statusFilter}
@@ -80,33 +74,29 @@ export default function Orders() {
             placeholder="All Statuses"
           />
         </div>
-      </div>
+      </PageHeader>
 
-      {error && (
-        <div className="mb-6 rounded-md bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-          {error}
-        </div>
-      )}
+      {error && <ErrorBanner message={error} onRetry={fetchOrders} />}
 
       {loading && <PageSpinner text="Loading orders..." />}
 
       {!loading && !error && orders.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Package className="size-16 text-muted-foreground/30 mb-4" />
-          <h3 className="text-lg font-semibold text-foreground">No orders found</h3>
-          <p className="text-muted-foreground mt-1">
-            {statusFilter
+        <EmptyState
+          icon={Package}
+          title="No orders found"
+          description={
+            statusFilter
               ? 'No orders with this status.'
               : isFarmer
-                ? 'You haven\'t received any orders yet.'
-                : 'You haven\'t placed any orders yet.'}
-          </p>
-          {!isFarmer && (
-            <Button className="mt-4" onClick={() => navigate('/marketplace')}>
-              Browse Marketplace
-            </Button>
-          )}
-        </div>
+                ? "You haven't received any orders yet."
+                : "You haven't placed any orders yet."
+          }
+          action={
+            !isFarmer
+              ? { label: 'Browse Marketplace', onClick: () => navigate('/marketplace') }
+              : undefined
+          }
+        />
       )}
 
       {/* Orders List */}
@@ -148,30 +138,12 @@ export default function Orders() {
             </Link>
           ))}
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 pt-4">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page <= 1}
-                onClick={() => setPage((p) => p - 1)}
-              >
-                Previous
-              </Button>
-              <span className="text-sm text-muted-foreground">
-                Page {page} of {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page >= totalPages}
-                onClick={() => setPage((p) => p + 1)}
-              >
-                Next
-              </Button>
-            </div>
-          )}
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            variant="simple"
+          />
         </div>
       )}
     </div>

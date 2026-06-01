@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useAuth } from '@/hooks/useAuth'
+import { useForm } from '@/hooks/useForm'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -14,7 +15,7 @@ import { User, Save } from 'lucide-react'
 export default function Profile() {
   const { user, updateProfile } = useAuth()
 
-  const [form, setForm] = useState({
+  const { form, errors, setField, validate } = useForm({
     name: user?.name || '',
     phone: user?.phone || '',
     address: user?.address || '',
@@ -22,21 +23,15 @@ export default function Profile() {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-  const [validation, setValidation] = useState<Record<string, string>>({})
-
-  const validate = () => {
-    const errs: Record<string, string> = {}
-    if (!form.name.trim()) errs.name = 'Name is required'
-    setValidation(errs)
-    return Object.keys(errs).length === 0
-  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
     setMessage('')
 
-    if (!validate()) return
+    if (!validate({
+      name: (v) => !v.trim() ? 'Name is required' : undefined,
+    })) return
 
     setSaving(true)
     try {
@@ -113,8 +108,8 @@ export default function Profile() {
             <Input
               label="Full Name"
               value={form.name}
-              onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-              error={validation.name}
+              onChange={(e) => setField('name', e.target.value)}
+              error={errors.name}
             />
 
             {/* Email is read-only */}
@@ -131,14 +126,14 @@ export default function Profile() {
               type="tel"
               placeholder="+63 912 345 6789"
               value={form.phone}
-              onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
+              onChange={(e) => setField('phone', e.target.value)}
             />
 
             <Textarea
               label="Address"
               placeholder="Your full address"
               value={form.address}
-              onChange={(e) => setForm((prev) => ({ ...prev, address: e.target.value }))}
+              onChange={(e) => setField('address', e.target.value)}
               rows={3}
             />
 

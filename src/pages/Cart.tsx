@@ -4,11 +4,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PageSpinner } from '@/components/ui/spinner'
 import { Separator } from '@/components/ui/separator'
+import { ErrorBanner, EmptyState } from '@/components/shared'
 import { cartApi } from '@/lib/api'
 import { formatCurrency } from '@/lib/utils'
 import { useCart } from '@/context/CartContext'
 import type { CartItem } from '@/types'
-import { ShoppingCart, Trash2, Minus, Plus, ArrowLeft, Package } from 'lucide-react'
+import { ShoppingCart, Trash2, Minus, Plus, Package } from 'lucide-react'
 
 /**
  * Shopping cart page.
@@ -83,27 +84,15 @@ export default function Cart() {
         </h1>
       </div>
 
-      {error && (
-        <div className="mb-6 rounded-md bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-          {error}
-          <Button variant="outline" size="sm" className="ml-2" onClick={fetchCart}>
-            Retry
-          </Button>
-        </div>
-      )}
+      {error && <ErrorBanner message={error} onRetry={fetchCart} />}
 
       {!loading && items.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Package className="size-16 text-muted-foreground/30 mb-4" />
-          <h3 className="text-lg font-semibold text-foreground">Your cart is empty</h3>
-          <p className="text-muted-foreground mt-1">
-            Browse the marketplace to add items to your cart.
-          </p>
-          <Button className="mt-6" onClick={() => navigate('/marketplace')}>
-            <ArrowLeft className="size-4" />
-            Browse Marketplace
-          </Button>
-        </div>
+        <EmptyState
+          icon={Package}
+          title="Your cart is empty"
+          description="Browse the marketplace to add items to your cart."
+          action={{ label: 'Browse Marketplace', onClick: () => navigate('/marketplace') }}
+        />
       )}
 
       {items.length > 0 && (

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { JobCard } from '@/components/shared/JobCard'
+import { PageHeader, ErrorBanner, EmptyState, Pagination } from '@/components/shared'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
@@ -79,21 +80,14 @@ export default function Jobs() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Job Portal</h1>
-          <p className="text-muted-foreground mt-1">
-            Find farm work or hire skilled workers.
-          </p>
-        </div>
+      <PageHeader title="Job Portal" description="Find farm work or hire skilled workers.">
         {isFarmer && (
           <Button onClick={() => navigate('/jobs/new')}>
             <Plus className="size-4" />
             Post a Job
           </Button>
         )}
-      </div>
+      </PageHeader>
 
       {/* Filters */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row">
@@ -134,38 +128,33 @@ export default function Jobs() {
         </div>
       </div>
 
-      {error && (
-        <div className="mb-6 rounded-md bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-          {error}
-        </div>
-      )}
+      {error && <ErrorBanner message={error} onRetry={fetchJobs} />}
 
       {loading && <PageSpinner text="Loading jobs..." />}
 
       {!loading && !error && jobs.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Briefcase className="size-16 text-muted-foreground/30 mb-4" />
-          <h3 className="text-lg font-semibold text-foreground">No jobs found</h3>
-          <p className="text-muted-foreground mt-1">
-            {search || category || employmentType
+        <EmptyState
+          icon={Briefcase}
+          title="No jobs found"
+          description={
+            search || category || employmentType
               ? 'Try different search terms or filters.'
-              : 'No jobs posted yet.'}
-          </p>
-          {(search || category || employmentType) && (
-            <Button
-              variant="outline"
-              className="mt-4"
-              onClick={() => {
-                setSearch('')
-                setCategory('')
-                setEmploymentType('')
-                setPage(1)
-              }}
-            >
-              Clear Filters
-            </Button>
-          )}
-        </div>
+              : 'No jobs posted yet.'
+          }
+          action={
+            search || category || employmentType
+              ? {
+                  label: 'Clear Filters',
+                  onClick: () => {
+                    setSearch('')
+                    setCategory('')
+                    setEmploymentType('')
+                    setPage(1)
+                  },
+                }
+              : undefined
+          }
+        />
       )}
 
       {!loading && jobs.length > 0 && (
@@ -174,29 +163,7 @@ export default function Jobs() {
             <JobCard key={job.id} job={job} isOwner={isFarmer && job.farmer_id === user?.id} />
           ))}
 
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 pt-4">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page <= 1}
-                onClick={() => setPage((p) => p - 1)}
-              >
-                Previous
-              </Button>
-              <span className="text-sm text-muted-foreground">
-                Page {page} of {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page >= totalPages}
-                onClick={() => setPage((p) => p + 1)}
-              >
-                Next
-              </Button>
-            </div>
-          )}
+          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} variant="simple" />
         </div>
       )}
     </div>

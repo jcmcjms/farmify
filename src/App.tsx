@@ -7,6 +7,7 @@ import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
 
 // Lazy-loaded pages for code splitting
 import { lazy, Suspense } from 'react'
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary'
 import { PageSpinner } from '@/components/ui/spinner'
 
 const Landing = lazy(() => import('@/pages/Landing'))
@@ -47,6 +48,7 @@ export default function App() {
     <AuthProvider>
       <CartProvider>
         <Layout>
+          <ErrorBoundary>
           <Routes>
             {/* Public routes */}
             <Route
@@ -300,6 +302,7 @@ export default function App() {
               }
             />
           </Routes>
+          </ErrorBoundary>
         </Layout>
       </CartProvider>
     </AuthProvider>

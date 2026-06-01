@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useForm } from '@/hooks/useForm'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -24,7 +25,7 @@ const categoryOptions = [
 export default function NewInventoryItem() {
   const navigate = useNavigate()
 
-  const [form, setForm] = useState({
+  const { form, errors, setField, validate } = useForm({
     name: '',
     category: '',
     quantity: '',
@@ -36,34 +37,17 @@ export default function NewInventoryItem() {
   })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
-  const [validation, setValidation] = useState<Record<string, string>>({})
-
-  const updateField = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }))
-    if (validation[field]) {
-      setValidation((prev) => {
-        const next = { ...prev }
-        delete next[field]
-        return next
-      })
-    }
-  }
-
-  const validate = () => {
-    const errs: Record<string, string> = {}
-    if (!form.name.trim()) errs.name = 'Item name is required'
-    if (!form.category) errs.category = 'Category is required'
-    if (!form.quantity || Number(form.quantity) < 0) errs.quantity = 'Valid quantity is required'
-    if (!form.unit_cost || Number(form.unit_cost) < 0) errs.unit_cost = 'Valid unit cost is required'
-    setValidation(errs)
-    return Object.keys(errs).length === 0
-  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
 
-    if (!validate()) return
+    if (!validate({
+      name: (v) => !v.trim() ? 'Item name is required' : undefined,
+      category: (v) => !v ? 'Category is required' : undefined,
+      quantity: (v) => (!v || Number(v) < 0) ? 'Valid quantity is required' : undefined,
+      unit_cost: (v) => (!v || Number(v) < 0) ? 'Valid unit cost is required' : undefined,
+    })) return
 
     setSubmitting(true)
     try {
@@ -114,17 +98,17 @@ export default function NewInventoryItem() {
               label="Item Name *"
               placeholder="e.g., Organic Rice Seeds"
               value={form.name}
-              onChange={(e) => updateField('name', e.target.value)}
-              error={validation.name}
+              onChange={(e) => setField('name', e.target.value)}
+              error={errors.name}
             />
 
             <Select
               label="Category *"
               value={form.category}
-              onChange={(e) => updateField('category', e.target.value)}
+              onChange={(e) => setField('category', e.target.value)}
               options={categoryOptions}
               placeholder="Select category"
-              error={validation.category}
+              error={errors.category}
             />
 
             <div className="grid gap-4 sm:grid-cols-2">
@@ -133,14 +117,14 @@ export default function NewInventoryItem() {
                 type="number"
                 placeholder="0"
                 value={form.quantity}
-                onChange={(e) => updateField('quantity', e.target.value)}
-                error={validation.quantity}
+                onChange={(e) => setField('quantity', e.target.value)}
+                error={errors.quantity}
               />
               <Input
                 label="Unit"
                 placeholder="pcs, kg, sacks, liters"
                 value={form.unit}
-                onChange={(e) => updateField('unit', e.target.value)}
+                onChange={(e) => setField('unit', e.target.value)}
               />
             </div>
 
@@ -150,15 +134,15 @@ export default function NewInventoryItem() {
                 type="number"
                 placeholder="5"
                 value={form.min_quantity}
-                onChange={(e) => updateField('min_quantity', e.target.value)}
+                onChange={(e) => setField('min_quantity', e.target.value)}
               />
               <Input
                 label="Unit Cost (₱) *"
                 type="number"
                 placeholder="0.00"
                 value={form.unit_cost}
-                onChange={(e) => updateField('unit_cost', e.target.value)}
-                error={validation.unit_cost}
+                onChange={(e) => setField('unit_cost', e.target.value)}
+                error={errors.unit_cost}
               />
             </div>
 
@@ -166,14 +150,14 @@ export default function NewInventoryItem() {
               label="Supplier (optional)"
               placeholder="e.g., AgriSupply Co."
               value={form.supplier}
-              onChange={(e) => updateField('supplier', e.target.value)}
+              onChange={(e) => setField('supplier', e.target.value)}
             />
 
             <Textarea
               label="Notes (optional)"
               placeholder="Any additional notes about this item..."
               value={form.notes}
-              onChange={(e) => updateField('notes', e.target.value)}
+              onChange={(e) => setField('notes', e.target.value)}
               rows={3}
             />
 

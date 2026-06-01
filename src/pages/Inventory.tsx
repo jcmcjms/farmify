@@ -5,9 +5,10 @@ import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { PageSpinner } from '@/components/ui/spinner'
 import { InventoryTable } from '@/components/shared/InventoryTable'
+import { PageHeader, ErrorBanner, EmptyState, Pagination } from '@/components/shared'
 import { inventoryApi } from '@/lib/api'
 import type { InventoryItem } from '@/types'
-import { Plus, Warehouse, Search, AlertCircle } from 'lucide-react'
+import { Plus, Warehouse, Search } from 'lucide-react'
 
 const categoryOptions = [
   { value: '', label: 'All Categories' },
@@ -65,22 +66,12 @@ export default function Inventory() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-            <Warehouse className="size-7" />
-            Inventory
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Track your farm supplies, seeds, fertilizers, and equipment.
-          </p>
-        </div>
+      <PageHeader title="Inventory" description="Track your farm supplies, seeds, fertilizers, and equipment.">
         <Button onClick={() => navigate('/inventory/new')}>
           <Plus className="size-4" />
           Add Item
         </Button>
-      </div>
+      </PageHeader>
 
       {/* Search & Filter */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row">
@@ -108,15 +99,7 @@ export default function Inventory() {
         </div>
       </div>
 
-      {error && (
-        <div className="mb-6 flex items-center gap-2 rounded-md bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-          <AlertCircle className="size-4 shrink-0" />
-          <span>{error}</span>
-          <Button variant="outline" size="sm" className="ml-auto" onClick={fetchItems}>
-            Retry
-          </Button>
-        </div>
-      )}
+      {error && <ErrorBanner message={error} onRetry={fetchItems} />}
 
       {loading && <PageSpinner text="Loading inventory..." />}
 
@@ -125,43 +108,15 @@ export default function Inventory() {
           <InventoryTable items={items} />
 
           {items.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <Warehouse className="size-16 text-muted-foreground/30 mb-4" />
-              <h3 className="text-lg font-semibold text-foreground">No inventory items</h3>
-              <p className="text-muted-foreground mt-1">
-                Start adding your farm supplies and materials.
-              </p>
-              <Button className="mt-4" onClick={() => navigate('/inventory/new')}>
-                <Plus className="size-4" />
-                Add First Item
-              </Button>
-            </div>
+            <EmptyState
+              icon={Warehouse}
+              title="No inventory items"
+              description="Start adding your farm supplies and materials."
+              action={{ label: 'Add First Item', onClick: () => navigate('/inventory/new') }}
+            />
           )}
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-6 flex items-center justify-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page <= 1}
-                onClick={() => setPage((p) => p - 1)}
-              >
-                Previous
-              </Button>
-              <span className="text-sm text-muted-foreground">
-                Page {page} of {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page >= totalPages}
-                onClick={() => setPage((p) => p + 1)}
-              >
-                Next
-              </Button>
-            </div>
-          )}
+          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} variant="simple" />
         </>
       )}
     </div>

@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useCart } from '@/context/CartContext'
 import { ProductCard } from '@/components/shared/ProductCard'
-import { Button } from '@/components/ui/button'
+import { PageHeader, ErrorBanner, EmptyState, Pagination } from '@/components/shared'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { PageSpinner } from '@/components/ui/spinner'
 import { productsApi } from '@/lib/api'
 import type { Product } from '@/types'
-import { Search, Package, AlertCircle } from 'lucide-react'
+import { Search, Package } from 'lucide-react'
 
 const categoryOptions = [
   { value: '', label: 'All Categories' },
@@ -79,18 +79,13 @@ export default function Products() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     setPage(1)
-    fetchProducts()
+    // fetchProducts will be re-called by the useEffect when page state updates
   }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Marketplace</h1>
-        <p className="mt-1 text-muted-foreground">
-          Browse fresh produce and farm supplies from local farmers.
-        </p>
-      </div>
+      <PageHeader title="Marketplace" description="Browse fresh produce and farm supplies from local farmers." />
 
       {/* Search & Filter */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row">
@@ -119,43 +114,27 @@ export default function Products() {
       </div>
 
       {/* Error */}
-      {error && (
-        <div className="mb-6 flex items-center gap-2 rounded-md bg-destructive/10 border border-destructive/20 p-4 text-sm text-destructive">
-          <AlertCircle className="size-4 shrink-0" />
-          <span>{error}</span>
-          <Button variant="outline" size="sm" className="ml-auto" onClick={fetchProducts}>
-            Retry
-          </Button>
-        </div>
-      )}
+      {error && <ErrorBanner message={error} onRetry={fetchProducts} />}
 
       {/* Loading */}
       {loading && <PageSpinner text="Loading products..." />}
 
       {/* Empty state */}
       {!loading && !error && products.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Package className="size-16 text-muted-foreground/30 mb-4" />
-          <h3 className="text-lg font-semibold text-foreground">No products found</h3>
-          <p className="text-muted-foreground mt-1">
-            {search || category
+        <EmptyState
+          icon={Package}
+          title="No products found"
+          description={
+            search || category
               ? 'Try a different search term or category.'
-              : 'No products available yet. Check back soon!'}
-          </p>
-          {(search || category) && (
-            <Button
-              variant="outline"
-              className="mt-4"
-              onClick={() => {
-                setSearch('')
-                setCategory('')
-                setPage(1)
-              }}
-            >
-              Clear Filters
-            </Button>
-          )}
-        </div>
+              : 'No products available yet. Check back soon!'
+          }
+          action={
+            search || category
+              ? { label: 'Clear Filters', onClick: () => { setSearch(''); setCategory(''); setPage(1) } }
+              : undefined
+          }
+        />
       )}
 
       {/* Product Grid */}
@@ -172,36 +151,12 @@ export default function Products() {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-10 flex items-center justify-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-              >
-                Previous
-              </Button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <Button
-                  key={p}
-                  variant={p === page ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setPage(p)}
-                >
-                  {p}
-                </Button>
-              ))}
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page >= totalPages}
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              >
-                Next
-              </Button>
-            </div>
-          )}
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            variant="full"
+          />
         </>
       )}
     </div>

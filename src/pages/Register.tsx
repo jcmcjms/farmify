@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
+import { useForm } from '@/hooks/useForm'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
@@ -19,7 +20,7 @@ export default function Register() {
   const { register } = useAuth()
   const navigate = useNavigate()
 
-  const [form, setForm] = useState({
+  const { form, errors, setField, validate } = useForm({
     name: '',
     email: '',
     password: '',
@@ -29,39 +30,18 @@ export default function Register() {
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [validation, setValidation] = useState<Record<string, string>>({})
-
-  const updateField = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }))
-    // Clear validation for this field on change
-    if (validation[field]) {
-      setValidation((prev) => {
-        const next = { ...prev }
-        delete next[field]
-        return next
-      })
-    }
-  }
-
-  const validate = () => {
-    const errs: Record<string, string> = {}
-    if (!form.name.trim()) errs.name = 'Name is required'
-    if (!form.email.trim()) errs.email = 'Email is required'
-    else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Invalid email format'
-    if (!form.password) errs.password = 'Password is required'
-    else if (form.password.length < 6) errs.password = 'Password must be at least 6 characters'
-    if (!form.confirmPassword) errs.confirmPassword = 'Please confirm your password'
-    else if (form.password !== form.confirmPassword) errs.confirmPassword = 'Passwords do not match'
-    if (!form.role) errs.role = 'Please select a role'
-    setValidation(errs)
-    return Object.keys(errs).length === 0
-  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
 
-    if (!validate()) return
+    if (!validate({
+      name: (v) => !v?.trim() ? 'Name is required' : undefined,
+      email: (v) => !v?.trim() ? 'Email is required' : !/\S+@\S+\.\S+/.test(v) ? 'Invalid email format' : undefined,
+      password: (v) => !v ? 'Password is required' : v.length < 6 ? 'Password must be at least 6 characters' : undefined,
+      confirmPassword: (_, f) => !f.confirmPassword ? 'Please confirm your password' : f.password !== f.confirmPassword ? 'Passwords do not match' : undefined,
+      role: (v) => !v ? 'Please select a role' : undefined,
+    })) return
 
     setLoading(true)
     try {
@@ -109,8 +89,8 @@ export default function Register() {
                 label="Full Name"
                 placeholder="Juan Dela Cruz"
                 value={form.name}
-                onChange={(e) => updateField('name', e.target.value)}
-                error={validation.name}
+                onChange={(e) => setField('name', e.target.value)}
+                error={errors.name}
                 autoComplete="name"
               />
 
@@ -119,8 +99,8 @@ export default function Register() {
                 type="email"
                 placeholder="farmer@example.com"
                 value={form.email}
-                onChange={(e) => updateField('email', e.target.value)}
-                error={validation.email}
+                onChange={(e) => setField('email', e.target.value)}
+                error={errors.email}
                 autoComplete="email"
               />
 
@@ -129,16 +109,16 @@ export default function Register() {
                 type="tel"
                 placeholder="+63 912 345 6789"
                 value={form.phone}
-                onChange={(e) => updateField('phone', e.target.value)}
+                onChange={(e) => setField('phone', e.target.value)}
                 autoComplete="tel"
               />
 
               <Select
                 label="I want to join as"
                 value={form.role}
-                onChange={(e) => updateField('role', e.target.value)}
+                onChange={(e) => setField('role', e.target.value)}
                 options={roleOptions}
-                error={validation.role}
+                error={errors.role}
               />
 
               <Input
@@ -146,8 +126,8 @@ export default function Register() {
                 type="password"
                 placeholder="At least 6 characters"
                 value={form.password}
-                onChange={(e) => updateField('password', e.target.value)}
-                error={validation.password}
+                onChange={(e) => setField('password', e.target.value)}
+                error={errors.password}
                 autoComplete="new-password"
               />
 
@@ -156,8 +136,8 @@ export default function Register() {
                 type="password"
                 placeholder="Repeat your password"
                 value={form.confirmPassword}
-                onChange={(e) => updateField('confirmPassword', e.target.value)}
-                error={validation.confirmPassword}
+                onChange={(e) => setField('confirmPassword', e.target.value)}
+                error={errors.confirmPassword}
                 autoComplete="new-password"
               />
 

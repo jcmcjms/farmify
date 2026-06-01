@@ -1,5 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useForm } from '@/hooks/useForm'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -46,17 +47,16 @@ export default function PostJob() {
   const [loading, setLoading] = useState(isEditing)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
-  const [validation, setValidation] = useState<Record<string, string>>({})
 
-  const [form, setForm] = useState({
+  const { form, errors, setField, setForm, validate } = useForm({
     title: '',
     description: '',
     category: '',
     location: '',
     salary_min: '',
     salary_max: '',
-    salary_type: 'fixed' as string,
-    employment_type: 'full-time' as string,
+    salary_type: 'fixed',
+    employment_type: 'full-time',
     requirements: '',
     is_active: true,
   })
@@ -89,34 +89,18 @@ export default function PostJob() {
       }
     }
     fetchJob()
-  }, [id])
-
-  const updateField = (field: string, value: string | boolean) => {
-    setForm((prev) => ({ ...prev, [field]: value }))
-    if (validation[field]) {
-      setValidation((prev) => {
-        const next = { ...prev }
-        delete next[field]
-        return next
-      })
-    }
-  }
-
-  const validate = () => {
-    const errs: Record<string, string> = {}
-    if (!form.title.trim()) errs.title = 'Job title is required'
-    if (!form.description.trim()) errs.description = 'Job description is required'
-    if (!form.category) errs.category = 'Category is required'
-    if (!form.employment_type) errs.employment_type = 'Employment type is required'
-    setValidation(errs)
-    return Object.keys(errs).length === 0
-  }
+  }, [id, setForm])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
 
-    if (!validate()) return
+    if (!validate({
+      title: (v) => !v.trim() ? 'Job title is required' : undefined,
+      description: (v) => !v.trim() ? 'Job description is required' : undefined,
+      category: (v) => !v ? 'Category is required' : undefined,
+      employment_type: (v) => !v ? 'Employment type is required' : undefined,
+    })) return
 
     setSubmitting(true)
     try {
@@ -178,16 +162,16 @@ export default function PostJob() {
               label="Job Title *"
               placeholder="e.g., Farm Worker for Rice Harvest"
               value={form.title}
-              onChange={(e) => updateField('title', e.target.value)}
-              error={validation.title}
+              onChange={(e) => setField('title', e.target.value)}
+              error={errors.title}
             />
 
             <Textarea
               label="Job Description *"
               placeholder="Describe the job responsibilities, working conditions, etc."
               value={form.description}
-              onChange={(e) => updateField('description', e.target.value)}
-              error={validation.description}
+              onChange={(e) => setField('description', e.target.value)}
+              error={errors.description}
               rows={5}
             />
 
@@ -195,17 +179,17 @@ export default function PostJob() {
               <Select
                 label="Category *"
                 value={form.category}
-                onChange={(e) => updateField('category', e.target.value)}
+                onChange={(e) => setField('category', e.target.value)}
                 options={categoryOptions}
                 placeholder="Select category"
-                error={validation.category}
+                error={errors.category}
               />
               <Select
                 label="Employment Type *"
                 value={form.employment_type}
-                onChange={(e) => updateField('employment_type', e.target.value)}
+                onChange={(e) => setField('employment_type', e.target.value)}
                 options={employmentTypeOptions}
-                error={validation.employment_type}
+                error={errors.employment_type}
               />
             </div>
 
@@ -213,7 +197,7 @@ export default function PostJob() {
               label="Location"
               placeholder="e.g., Nueva Ecija"
               value={form.location}
-              onChange={(e) => updateField('location', e.target.value)}
+              onChange={(e) => setField('location', e.target.value)}
             />
 
             <div className="grid gap-4 sm:grid-cols-3">
@@ -222,19 +206,19 @@ export default function PostJob() {
                 type="number"
                 placeholder="Min"
                 value={form.salary_min}
-                onChange={(e) => updateField('salary_min', e.target.value)}
+                onChange={(e) => setField('salary_min', e.target.value)}
               />
               <Input
                 label="Salary Max"
                 type="number"
                 placeholder="Max"
                 value={form.salary_max}
-                onChange={(e) => updateField('salary_max', e.target.value)}
+                onChange={(e) => setField('salary_max', e.target.value)}
               />
               <Select
                 label="Salary Type"
                 value={form.salary_type}
-                onChange={(e) => updateField('salary_type', e.target.value)}
+                onChange={(e) => setField('salary_type', e.target.value)}
                 options={salaryTypeOptions}
               />
             </div>
@@ -243,7 +227,7 @@ export default function PostJob() {
               label="Requirements"
               placeholder="List the qualifications and requirements for this job..."
               value={form.requirements}
-              onChange={(e) => updateField('requirements', e.target.value)}
+              onChange={(e) => setField('requirements', e.target.value)}
               rows={4}
             />
 
@@ -253,7 +237,7 @@ export default function PostJob() {
                 type="checkbox"
                 id="is_active"
                 checked={form.is_active}
-                onChange={(e) => updateField('is_active', e.target.checked)}
+                onChange={(e) => setField('is_active', e.target.checked)}
                 className="size-4 rounded border-input text-primary focus:ring-primary"
               />
               <label htmlFor="is_active" className="text-sm font-medium">
