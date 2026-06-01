@@ -12,6 +12,7 @@ import orderRoutes from './routes/orders.js';
 import jobRoutes from './routes/jobs.js';
 import inventoryRoutes from './routes/inventory.js';
 import cartRoutes from './routes/cart.js';
+import dashboardRoutes from './routes/dashboard.js';
 import adminRoutes from './routes/admin.js';
 import verificationRoutes from './routes/verification.js';
 import adminVerificationRoutes from './routes/adminVerifications.js';
@@ -60,6 +61,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin', adminVerificationRoutes);
 

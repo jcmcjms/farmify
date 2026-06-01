@@ -78,15 +78,21 @@ export const adminVerificationController = {
   /**
    * GET /api/admin/verifications/:id
    * Get full verification detail for a specific farmer.
+   * Returns nested { farmer, profile, documents } structure.
    */
   async getVerificationDetail(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
 
       const result = await pool.query(
-        `SELECT u.id, u.name, u.email, u.phone, u.address, u.role,
-                u.verification_status, u.created_at AS user_created_at,
-                fp.*
+        `SELECT
+            u.id AS u_id, u.name, u.email, u.phone, u.address, u.role,
+            u.verification_status, u.created_at AS user_created_at,
+            fp.id AS fp_id, fp.farmer_id, fp.farm_name, fp.farm_address,
+            fp.farm_city, fp.farm_province, fp.farm_size_hectares, fp.years_farming,
+            fp.crops_grown, fp.government_id_type, fp.cooperative_name,
+            fp.verification_notes, fp.submitted_at, fp.reviewed_at, fp.reviewed_by,
+            fp.created_at AS fp_created_at, fp.updated_at AS fp_updated_at
          FROM users u
          LEFT JOIN farmer_profiles fp ON u.id = fp.farmer_id
          WHERE u.id = $1 AND u.role = 'farmer'`,
@@ -101,6 +107,40 @@ export const adminVerificationController = {
         return;
       }
 
+      const row = result.rows[0];
+
+      // Build farmer object from user columns
+      const farmer = {
+        id: row.u_id,
+        name: row.name,
+        email: row.email,
+        phone: row.phone,
+        address: row.address,
+        role: row.role,
+        created_at: row.user_created_at,
+      };
+
+      // Build profile object if farmer_profile exists
+      const profile = row.farmer_id
+        ? {
+            id: row.fp_id,
+            farmer_id: row.farmer_id,
+            farm_name: row.farm_name,
+            farm_address: row.farm_address,
+            farm_city: row.farm_city,
+            farm_province: row.farm_province,
+            farm_size_hectares: row.farm_size_hectares,
+            years_farming: row.years_farming,
+            crops_grown: row.crops_grown,
+            government_id_type: row.government_id_type,
+            cooperative_name: row.cooperative_name,
+            verification_notes: row.verification_notes,
+            submitted_at: row.submitted_at,
+            reviewed_at: row.reviewed_at,
+            reviewed_by: row.reviewed_by,
+          }
+        : null;
+
       // Get verification documents
       const docsResult = await pool.query(
         `SELECT id, document_type, file_path, file_name, mime_type, file_size, created_at
@@ -113,7 +153,8 @@ export const adminVerificationController = {
       res.status(200).json({
         success: true,
         data: {
-          ...result.rows[0],
+          farmer,
+          profile,
           documents: docsResult.rows,
         },
       });

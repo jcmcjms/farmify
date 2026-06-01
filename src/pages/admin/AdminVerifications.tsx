@@ -148,6 +148,26 @@ export default function AdminVerifications() {
 
   // ── Detail View ──
   if (detail) {
+    // Safety check: if farmer data is missing, show a fallback message
+    if (!detail.farmer) {
+      return (
+        <div className="p-6 lg:p-8 max-w-4xl">
+          <button
+            onClick={closeDetail}
+            className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="size-4" />
+            Back to verifications
+          </button>
+          <Card>
+            <CardContent className="p-12 text-center">
+              <p className="text-muted-foreground">Farmer details are not available.</p>
+            </CardContent>
+          </Card>
+        </div>
+      )
+    }
+
     return (
       <div className="p-6 lg:p-8 max-w-4xl">
         <button
