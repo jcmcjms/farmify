@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from 'react'
+﻿import { useState, useEffect, type FormEvent } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useForm } from '@/hooks/useForm'
 import { Button } from '@/components/ui/button'
@@ -9,7 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PageSpinner } from '@/components/ui/spinner'
 import { jobsApi } from '@/lib/api'
 import type { Job } from '@/types'
-import { ArrowLeft, Briefcase } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon, Briefcase01Icon } from '@hugeicons/core-free-icons'
 
 const categoryOptions = [
   { value: 'planting', label: 'Planting' },
@@ -139,14 +140,14 @@ export default function PostJob() {
         onClick={() => navigate('/jobs')}
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        <ArrowLeft className="size-4" />
+        <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
         Back to Jobs
       </button>
 
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl">
-            <Briefcase className="size-5" />
+            <HugeiconsIcon icon={Briefcase01Icon} className="size-5" />
             {isEditing ? 'Edit Job' : 'Post a New Job'}
           </CardTitle>
         </CardHeader>

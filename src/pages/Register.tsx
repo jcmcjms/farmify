@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+﻿import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useForm } from '@/hooks/useForm'
@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Sprout, UserPlus } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { NaturalFoodIcon, UserAdd01Icon } from '@hugeicons/core-free-icons'
 
 const roleOptions = [
   { value: 'farmer', label: 'Farmer' },
@@ -68,7 +69,7 @@ export default function Register() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 text-2xl font-bold text-primary">
-            <Sprout className="size-8" />
+            <HugeiconsIcon icon={NaturalFoodIcon} className="size-8" />
             Farmify
           </Link>
         </div>
@@ -155,7 +156,7 @@ export default function Register() {
                   'Creating account...'
                 ) : (
                   <>
-                    <UserPlus className="size-4" />
+                    <HugeiconsIcon icon={UserAdd01Icon} className="size-4" />
                     Create Account
                   </>
                 )}

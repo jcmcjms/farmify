@@ -1,21 +1,21 @@
-import { useState, type FormEvent } from 'react'
+﻿import { useState, type FormEvent } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useForm } from '@/hooks/useForm'
-import { useToast } from '@/hooks/useToast'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatDate } from '@/lib/utils'
-import { User, Save } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { FloppyDiskIcon, UserIcon } from '@hugeicons/core-free-icons'
 
 /**
  * Profile page — view and edit user information.
  */
 export default function Profile() {
   const { user, updateProfile } = useAuth()
-  const { success, error: toastError } = useToast()
 
   const { form, errors, setField, validate } = useForm({
     name: user?.name || '',
@@ -43,12 +43,12 @@ export default function Profile() {
         address: form.address || undefined,
       })
       setMessage('Profile updated successfully!')
-      success('Profile updated', 'Your changes have been saved.')
+      toast.success('Profile updated', { description: 'Your changes have been saved.' })
       setTimeout(() => setMessage(''), 3000)
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to update profile'
       setError(msg)
-      toastError('Update failed', msg)
+      toast.error('Update failed', { description: msg })
     } finally {
       setSaving(false)
     }
@@ -71,7 +71,7 @@ export default function Profile() {
         <CardContent className="p-6">
           <div className="flex items-center gap-4">
             <div className="flex size-16 items-center justify-center rounded-full bg-primary/10">
-              <User className="size-8 text-primary" />
+              <HugeiconsIcon icon={UserIcon} className="size-8 text-primary" />
             </div>
             <div>
               <h2 className="text-xl font-bold">{user.name}</h2>
@@ -93,7 +93,7 @@ export default function Profile() {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Save className="size-5" />
+            <HugeiconsIcon icon={FloppyDiskIcon} className="size-5" />
             Edit Profile
           </CardTitle>
         </CardHeader>

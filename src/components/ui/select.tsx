@@ -1,6 +1,7 @@
-import { forwardRef, type SelectHTMLAttributes } from 'react'
+﻿import { forwardRef, type SelectHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
-import { ChevronDown } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowDown01Icon } from '@hugeicons/core-free-icons'
 
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string
@@ -45,7 +46,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
               </option>
             ))}
           </select>
-          <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <HugeiconsIcon icon={ArrowDown01Icon} className="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         </div>
         {error && (
           <p className="text-xs text-destructive">{error}</p>

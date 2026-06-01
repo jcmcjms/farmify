@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+﻿import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Sprout, ShoppingBag, Briefcase, Warehouse, ArrowRight, Star, ChevronRight, Leaf, Wheat, Tractor } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowRight01Icon, Briefcase01Icon, CornIcon, Leaf01Icon, NaturalFoodIcon, ShoppingBag01Icon, StarIcon, TractorIcon, WarehouseIcon } from '@hugeicons/core-free-icons'
 
 /**
  * Animated counter hook.
@@ -59,21 +60,21 @@ export default function Landing() {
 
   const features = [
     {
-      icon: ShoppingBag,
+      icon: ShoppingBag01Icon,
       title: 'E-Commerce Marketplace',
       description: 'Sell your fresh produce directly to buyers. Set your prices, manage listings, and grow your customer base without middlemen.',
       color: 'text-green-600',
       bgColor: 'bg-green-100',
     },
     {
-      icon: Briefcase,
+      icon: Briefcase01Icon,
       title: 'Job Portal',
       description: 'Find skilled workers for your farm or discover agricultural job opportunities near you. Seasonal, full-time, and contract work.',
       color: 'text-amber-600',
       bgColor: 'bg-amber-100',
     },
     {
-      icon: Warehouse,
+      icon: WarehouseIcon,
       title: 'Smart Inventory',
       description: 'Track supplies, seeds, fertilizers, and equipment. Get low-stock alerts and manage your farm resources efficiently.',
       color: 'text-emerald-600',
@@ -127,7 +128,7 @@ export default function Landing() {
             {/* Left content */}
             <div className="animate-fade-in">
               <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-1.5 text-sm font-medium text-green-700 mb-6">
-                <Sprout className="size-4" />
+                <HugeiconsIcon icon={NaturalFoodIcon} className="size-4" />
                 <span>Empowering Filipino Farmers</span>
               </div>
               <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-tight font-display">
@@ -142,13 +143,13 @@ export default function Landing() {
                 {isAuthenticated ? (
                   <Button size="lg" onClick={() => navigate('/dashboard')}>
                     Go to Dashboard
-                    <ArrowRight className="size-4" />
+                    <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
                   </Button>
                 ) : (
                   <>
                     <Button size="lg" onClick={() => navigate('/register')}>
                       Get Started Free
-                      <ArrowRight className="size-4" />
+                      <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
                     </Button>
                     <Button variant="outline" size="lg" onClick={() => navigate('/marketplace')}>
                       Browse Marketplace
@@ -161,7 +162,7 @@ export default function Landing() {
               <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className="size-4 fill-amber-500 text-amber-500" />
+                    <HugeiconsIcon icon={StarIcon} key={i} className="size-4 fill-amber-500 text-amber-500" />
                   ))}
                   <span className="ml-2">Trusted by the Filipino farming community</span>
                 </div>
@@ -174,7 +175,7 @@ export default function Landing() {
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-green-200 via-emerald-100 to-green-50 animate-pulse" style={{ animationDuration: '4s' }} />
                 <div className="absolute inset-8 rounded-full bg-white/80 backdrop-blur flex items-center justify-center">
                   <div className="text-center">
-                    <Tractor className="size-20 text-primary mx-auto" />
+                    <HugeiconsIcon icon={TractorIcon} className="size-20 text-primary mx-auto" />
                     <p className="mt-4 text-lg font-semibold text-foreground">Farmify Platform</p>
                     <p className="text-sm text-muted-foreground">All-in-one farm management</p>
                   </div>
@@ -182,12 +183,12 @@ export default function Landing() {
                 {/* Floating elements */}
                 <div className="absolute top-10 -left-4 rounded-lg bg-white px-3 py-2 shadow-lg animate-bounce" style={{ animationDuration: '3s' }}>
                   <p className="text-xs font-medium text-green-600 flex items-center gap-1">
-                    <Wheat className="size-3" /> Fresh Produce
+                    <HugeiconsIcon icon={CornIcon} className="size-3" /> Fresh Produce
                   </p>
                 </div>
                 <div className="absolute bottom-16 -right-4 rounded-lg bg-white px-3 py-2 shadow-lg animate-bounce" style={{ animationDuration: '3.5s' }}>
                   <p className="text-xs font-medium text-amber-600 flex items-center gap-1">
-                    <Briefcase className="size-3" /> Farm Jobs
+                    <HugeiconsIcon icon={Briefcase01Icon} className="size-3" /> Farm Jobs
                   </p>
                 </div>
               </div>
@@ -217,7 +218,7 @@ export default function Landing() {
               >
                 <CardContent className="p-8">
                   <div className={`mb-5 inline-flex rounded-xl ${feature.bgColor} p-3.5 ${feature.color} transition-transform duration-300 group-hover:scale-110`}>
-                    <feature.icon className="size-7" />
+                    <HugeiconsIcon icon={feature.icon} className="size-7" />
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">{feature.title}</h3>
                   <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
@@ -311,7 +312,7 @@ export default function Landing() {
                   {/* Stars */}
                   <div className="flex gap-0.5 mb-4">
                     {Array.from({ length: t.rating }).map((_, j) => (
-                      <Star key={j} className="size-4 fill-amber-400 text-amber-400" />
+                      <HugeiconsIcon icon={StarIcon} key={j} className="size-4 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
                   <blockquote className="text-muted-foreground leading-relaxed mb-6 italic">
@@ -351,7 +352,7 @@ export default function Landing() {
                 onClick={() => navigate('/dashboard')}
               >
                 Go to Dashboard
-                <ChevronRight className="size-4" />
+                <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
               </Button>
             ) : (
               <>
@@ -361,7 +362,7 @@ export default function Landing() {
                   onClick={() => navigate('/register')}
                 >
                   Join Farmify Free
-                  <ChevronRight className="size-4" />
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
                 </Button>
                 <Button
                   variant="outline"
@@ -379,7 +380,7 @@ export default function Landing() {
 
       {/* Decorative bottom leaf */}
       <div className="flex justify-center py-4 bg-gradient-to-r from-green-600 to-emerald-700">
-        <Leaf className="size-6 text-green-300/50" />
+        <HugeiconsIcon icon={Leaf01Icon} className="size-6 text-green-300/50" />
       </div>
     </div>
   )

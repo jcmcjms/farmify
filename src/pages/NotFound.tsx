@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom'
-import { Sprout } from 'lucide-react'
+﻿import { Link } from 'react-router-dom'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { NaturalFoodIcon } from '@hugeicons/core-free-icons'
 
 /**
  * 404 page displayed for unknown routes.
@@ -7,7 +8,7 @@ import { Sprout } from 'lucide-react'
 export default function NotFound() {
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center text-center px-4 animate-fade-in">
-      <Sprout className="size-16 text-muted-foreground/20 mb-4" />
+      <HugeiconsIcon icon={NaturalFoodIcon} className="size-16 text-muted-foreground/20 mb-4" />
       <h1 className="text-7xl font-bold tracking-tight text-muted-foreground/30 font-display">
         404
       </h1>

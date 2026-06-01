@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { adminApi } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -6,16 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { PageSpinner } from '@/components/ui/spinner'
 import type { VerificationListItem, FarmerProfile, VerificationDocument, User } from '@/types'
-import {
-  ArrowLeft,
-  Search,
-  CheckCircle2,
-  XCircle,
-  User as UserIcon,
-  Mail,
-  Shield,
-  FileImage,
-} from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon, CancelCircleIcon, CheckmarkCircle01Icon, Image01Icon, Mail01Icon, Search01Icon, Shield01Icon, UserIcon } from '@hugeicons/core-free-icons'
 
 const STATUS_TABS = [
   { value: 'all', label: 'All' },
@@ -156,7 +148,7 @@ export default function AdminVerifications() {
             onClick={closeDetail}
             className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            <ArrowLeft className="size-4" />
+            <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
             Back to verifications
           </button>
           <Card>
@@ -174,7 +166,7 @@ export default function AdminVerifications() {
           onClick={closeDetail}
           className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="size-4" />
+          <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
           Back to verifications
         </button>
 
@@ -200,24 +192,24 @@ export default function AdminVerifications() {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <UserIcon className="size-5 text-muted-foreground" />
+              <HugeiconsIcon icon={UserIcon} className="size-5 text-muted-foreground" />
               Farmer Information
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-start gap-4">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
-                <UserIcon className="size-6 text-primary" />
+                <HugeiconsIcon icon={UserIcon} className="size-6 text-primary" />
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold">{detail.farmer.name}</h3>
                 <div className="mt-1 flex flex-wrap gap-3 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
-                    <Mail className="size-3.5" />
+                    <HugeiconsIcon icon={Mail01Icon} className="size-3.5" />
                     {detail.farmer.email}
                   </span>
                   <span className="flex items-center gap-1">
-                    <Shield className="size-3.5" />
+                    <HugeiconsIcon icon={Shield01Icon} className="size-3.5" />
                     {detail.farmer.role}
                   </span>
                 </div>
@@ -285,7 +277,7 @@ export default function AdminVerifications() {
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <FileImage className="size-5 text-muted-foreground" />
+                <HugeiconsIcon icon={Image01Icon} className="size-5 text-muted-foreground" />
                 Submitted Documents
               </CardTitle>
             </CardHeader>
@@ -312,12 +304,12 @@ export default function AdminVerifications() {
                           />
                         ) : (
                           <div className="flex size-full items-center justify-center text-muted-foreground">
-                            <FileImage className="size-8" />
+                            <HugeiconsIcon icon={Image01Icon} className="size-8" />
                           </div>
                         )}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors">
                           <span className="text-white opacity-0 group-hover:opacity-100 text-sm font-medium flex items-center gap-1">
-                            <FileImage className="size-4" />
+                            <HugeiconsIcon icon={Image01Icon} className="size-4" />
                             View
                           </span>
                         </div>
@@ -349,14 +341,14 @@ export default function AdminVerifications() {
               className="bg-green-600 hover:bg-green-700"
               onClick={() => handleApprove(detail.farmer.id)}
             >
-              <CheckCircle2 className="size-4" />
+              <HugeiconsIcon icon={CheckmarkCircle01Icon} className="size-4" />
               Approve
             </Button>
             <Button
               variant="destructive"
               onClick={() => setRejectModal(true)}
             >
-              <XCircle className="size-4" />
+              <HugeiconsIcon icon={CancelCircleIcon} className="size-4" />
               Reject
             </Button>
           </div>
@@ -454,7 +446,7 @@ export default function AdminVerifications() {
         <Card>
           <CardContent className="p-12 text-center">
             <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-muted">
-              <Search className="size-6 text-muted-foreground" />
+              <HugeiconsIcon icon={Search01Icon} className="size-6 text-muted-foreground" />
             </div>
             <h3 className="font-semibold text-foreground">No verifications found</h3>
             <p className="mt-1 text-sm text-muted-foreground">

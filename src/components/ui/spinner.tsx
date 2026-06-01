@@ -1,31 +1,19 @@
 import { cn } from '@/lib/utils'
-import { Loader2 } from 'lucide-react'
 
-interface SpinnerProps {
-  size?: number
+interface PageSpinnerProps {
   className?: string
-  text?: string
 }
 
 /**
- * Loading spinner component.
+ * Full-page centered loading spinner using shadcn styling.
  */
-export function Spinner({ size = 24, className, text }: SpinnerProps) {
+export function PageSpinner({ className }: PageSpinnerProps) {
   return (
-    <div className={cn('flex flex-col items-center justify-center gap-2', className)}>
-      <Loader2 className="animate-spin text-primary" style={{ width: size, height: size }} />
-      {text && <p className="text-sm text-muted-foreground">{text}</p>}
-    </div>
-  )
-}
-
-/**
- * Full page spinner for loading states.
- */
-export function PageSpinner({ text = 'Loading...' }: { text?: string }) {
-  return (
-    <div className="flex min-h-[60vh] items-center justify-center">
-      <Spinner size={32} text={text} />
+    <div className={cn('flex items-center justify-center py-20', className)}>
+      <div className="flex flex-col items-center gap-3">
+        <div className="size-8 animate-spin rounded-full border-2 border-muted-foreground/20 border-t-primary" />
+        <p className="text-sm text-muted-foreground">Loading...</p>
+      </div>
     </div>
   )
 }

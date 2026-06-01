@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
@@ -9,7 +9,8 @@ import { PageSpinner } from '@/components/ui/spinner'
 import { jobsApi } from '@/lib/api'
 import { formatDate } from '@/lib/utils'
 import type { Job, JobApplication } from '@/types'
-import { ArrowLeft, Briefcase, MapPin, Clock, Users, Send, CheckCircle, XCircle, Eye } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon, Briefcase01Icon, CancelCircleIcon, CheckmarkCircle01Icon, Clock01Icon, EyeIcon, Forward01Icon, MapPinIcon, UserMultipleIcon } from '@hugeicons/core-free-icons'
 
 /**
  * Job detail page — full job info, apply form, and applications management.
@@ -103,11 +104,11 @@ export default function JobDetail() {
   if (error || !job) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-12 text-center">
-        <Briefcase className="size-16 text-muted-foreground/30 mx-auto mb-4" />
+        <HugeiconsIcon icon={Briefcase01Icon} className="size-16 text-muted-foreground/30 mx-auto mb-4" />
         <h2 className="text-xl font-semibold">Job Not Found</h2>
         <p className="text-muted-foreground mt-1">{error || 'This job posting does not exist.'}</p>
         <Button className="mt-4" onClick={() => navigate('/jobs')}>
-          <ArrowLeft className="size-4" />
+          <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
           Back to Jobs
         </Button>
       </div>
@@ -141,7 +142,7 @@ export default function JobDetail() {
         onClick={() => navigate('/jobs')}
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        <ArrowLeft className="size-4" />
+        <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
         Back to Jobs
       </button>
 
@@ -164,20 +165,20 @@ export default function JobDetail() {
           {/* Details Grid */}
           <div className="grid grid-cols-2 gap-4 rounded-lg bg-muted p-4">
             <div className="flex items-center gap-2 text-sm">
-              <MapPin className="size-4 text-muted-foreground" />
+              <HugeiconsIcon icon={MapPinIcon} className="size-4 text-muted-foreground" />
               <span>{job.location || 'Location not specified'}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Clock className="size-4 text-muted-foreground" />
+              <HugeiconsIcon icon={Clock01Icon} className="size-4 text-muted-foreground" />
               <span>{displaySalary()} / {job.salary_type}</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Briefcase className="size-4 text-muted-foreground" />
+              <HugeiconsIcon icon={Briefcase01Icon} className="size-4 text-muted-foreground" />
               <span className="capitalize">{job.employment_type.replace('-', ' ')}</span>
             </div>
             {job.applications_count !== undefined && (
               <div className="flex items-center gap-2 text-sm">
-                <Users className="size-4 text-muted-foreground" />
+                <HugeiconsIcon icon={UserMultipleIcon} className="size-4 text-muted-foreground" />
                 <span>{job.applications_count} applicant{job.applications_count !== 1 ? 's' : ''}</span>
               </div>
             )}
@@ -230,7 +231,7 @@ export default function JobDetail() {
                 />
                 <div className="flex gap-3">
                   <Button onClick={handleApply} disabled={applying}>
-                    {applying ? 'Submitting...' : <><Send className="size-4" /> Submit Application</>}
+                    {applying ? 'Submitting...' : <><HugeiconsIcon icon={Forward01Icon} className="size-4" /> Submit Application</>}
                   </Button>
                   <Button variant="outline" onClick={() => setShowApplyForm(false)}>
                     Cancel
@@ -244,7 +245,7 @@ export default function JobDetail() {
           {!isOwner && applied && (
             <Card className="bg-green-50 border-green-200">
               <CardContent className="p-6 flex items-center gap-3">
-                <CheckCircle className="size-6 text-green-600 shrink-0" />
+                <HugeiconsIcon icon={CheckmarkCircle01Icon} className="size-6 text-green-600 shrink-0" />
                 <div>
                   <p className="font-semibold text-green-800">Application Submitted!</p>
                   <p className="text-sm text-green-600">The farmer will review your application and get back to you.</p>
@@ -262,7 +263,7 @@ export default function JobDetail() {
               }
               setShowApplyForm(true)
             }}>
-              <Send className="size-4" />
+              <HugeiconsIcon icon={Forward01Icon} className="size-4" />
               Apply for this Job
             </Button>
           )}
@@ -281,7 +282,7 @@ export default function JobDetail() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Users className="size-5" />
+                  <HugeiconsIcon icon={UserMultipleIcon} className="size-5" />
                   Applications ({applications.length})
                 </CardTitle>
               </CardHeader>
@@ -314,7 +315,7 @@ export default function JobDetail() {
                               className="text-xs h-7 px-2"
                               onClick={() => handleUpdateApplicationStatus(app.id, 'reviewed')}
                             >
-                              <Eye className="size-3 mr-1" /> Review
+                              <HugeiconsIcon icon={EyeIcon} className="size-3 mr-1" /> Review
                             </Button>
                             <Button
                               variant="outline"
@@ -322,7 +323,7 @@ export default function JobDetail() {
                               className="text-xs h-7 px-2 text-green-600"
                               onClick={() => handleUpdateApplicationStatus(app.id, 'shortlisted')}
                             >
-                              <CheckCircle className="size-3 mr-1" /> Shortlist
+                              <HugeiconsIcon icon={CheckmarkCircle01Icon} className="size-3 mr-1" /> Shortlist
                             </Button>
                             <Button
                               variant="outline"
@@ -330,7 +331,7 @@ export default function JobDetail() {
                               className="text-xs h-7 px-2 text-destructive"
                               onClick={() => handleUpdateApplicationStatus(app.id, 'rejected')}
                             >
-                              <XCircle className="size-3 mr-1" /> Reject
+                              <HugeiconsIcon icon={CancelCircleIcon} className="size-3 mr-1" /> Reject
                             </Button>
                           </>
                         )}
@@ -342,7 +343,7 @@ export default function JobDetail() {
                               className="text-xs h-7 px-2 text-green-600"
                               onClick={() => handleUpdateApplicationStatus(app.id, 'shortlisted')}
                             >
-                              <CheckCircle className="size-3 mr-1" /> Shortlist
+                              <HugeiconsIcon icon={CheckmarkCircle01Icon} className="size-3 mr-1" /> Shortlist
                             </Button>
                             <Button
                               variant="outline"
@@ -350,7 +351,7 @@ export default function JobDetail() {
                               className="text-xs h-7 px-2 text-destructive"
                               onClick={() => handleUpdateApplicationStatus(app.id, 'rejected')}
                             >
-                              <XCircle className="size-3 mr-1" /> Reject
+                              <HugeiconsIcon icon={CancelCircleIcon} className="size-3 mr-1" /> Reject
                             </Button>
                           </>
                         )}
@@ -362,7 +363,7 @@ export default function JobDetail() {
                               className="text-xs h-7 px-2 text-green-600"
                               onClick={() => handleUpdateApplicationStatus(app.id, 'accepted')}
                             >
-                              <CheckCircle className="size-3 mr-1" /> Accept
+                              <HugeiconsIcon icon={CheckmarkCircle01Icon} className="size-3 mr-1" /> Accept
                             </Button>
                             <Button
                               variant="outline"
@@ -370,7 +371,7 @@ export default function JobDetail() {
                               className="text-xs h-7 px-2 text-destructive"
                               onClick={() => handleUpdateApplicationStatus(app.id, 'rejected')}
                             >
-                              <XCircle className="size-3 mr-1" /> Reject
+                              <HugeiconsIcon icon={CancelCircleIcon} className="size-3 mr-1" /> Reject
                             </Button>
                           </>
                         )}

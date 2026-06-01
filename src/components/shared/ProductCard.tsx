@@ -1,10 +1,11 @@
-import { Link, useNavigate } from 'react-router-dom'
+﻿import { Link, useNavigate } from 'react-router-dom'
 import type { Product } from '@/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { formatCurrency } from '@/lib/utils'
-import { ShoppingCart, Leaf, Eye } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { EyeIcon, Leaf01Icon, ShoppingCart01Icon } from '@hugeicons/core-free-icons'
 
 interface ProductCardProps {
   product: Product
@@ -32,7 +33,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
             />
           ) : (
             <div className="flex size-full items-center justify-center" aria-label={`${product.name} image placeholder`}>
-              <Leaf className="size-12 text-primary/20 transition-transform duration-300 group-hover:scale-110" />
+              <HugeiconsIcon icon={Leaf01Icon} className="size-12 text-primary/20 transition-transform duration-300 group-hover:scale-110" />
             </div>
           )}
 
@@ -40,7 +41,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {product.is_organic && (
               <Badge variant="success" className="text-[10px]">
-                <Leaf className="size-3 mr-0.5" />
+                <HugeiconsIcon icon={Leaf01Icon} className="size-3 mr-0.5" />
                 Organic
               </Badge>
             )}
@@ -101,7 +102,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
                 className="flex-1"
                 onClick={() => onAddToCart(product)}
               >
-                <ShoppingCart className="size-4" />
+                <HugeiconsIcon icon={ShoppingCart01Icon} className="size-4" />
                 Add to Cart
               </Button>
             )}
@@ -110,7 +111,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
               size="icon"
               onClick={() => navigate(`/products/${product.id}`)}
             >
-              <Eye className="size-4" />
+              <HugeiconsIcon icon={EyeIcon} className="size-4" />
             </Button>
           </div>
         )}

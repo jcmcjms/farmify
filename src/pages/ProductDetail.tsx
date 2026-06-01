@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useCart } from '@/context/CartContext'
@@ -11,7 +11,8 @@ import { Separator } from '@/components/ui/separator'
 import { productsApi } from '@/lib/api'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import type { Product } from '@/types'
-import { Leaf, ShoppingCart, Minus, Plus, ArrowLeft, Package, LogIn } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon, Leaf01Icon, Login01Icon, MinusSignIcon, PackageIcon, PlusSignIcon, ShoppingCart01Icon } from '@hugeicons/core-free-icons'
 
 /**
  * Product detail — full view of a single product.
@@ -55,11 +56,11 @@ export default function ProductDetail() {
     return (
       <div className="mx-auto max-w-7xl px-4 py-12">
         <div className="flex flex-col items-center gap-4 text-center">
-          <Package className="size-16 text-muted-foreground/30" />
+          <HugeiconsIcon icon={PackageIcon} className="size-16 text-muted-foreground/30" />
           <h2 className="text-xl font-semibold">Product Not Found</h2>
           <p className="text-muted-foreground">{error}</p>
           <Button onClick={() => navigate('/marketplace')}>
-            <ArrowLeft className="size-4" />
+            <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
             Back to Marketplace
           </Button>
         </div>
@@ -101,7 +102,7 @@ export default function ProductDetail() {
       {/* Auth hint for unauthenticated users */}
       {!isAuthenticated && (
         <div className="mb-6 flex items-center gap-2 rounded-md bg-blue-50 border border-blue-200 p-3 text-sm text-blue-800">
-          <LogIn className="size-4 shrink-0" />
+          <HugeiconsIcon icon={Login01Icon} className="size-4 shrink-0" />
           <span>
             <strong>Sign in</strong> to add this product to your cart.{' '}
             <button
@@ -125,7 +126,7 @@ export default function ProductDetail() {
             />
           ) : (
             <div className="flex size-full items-center justify-center">
-              <Leaf className="size-24 text-muted-foreground/30" />
+              <HugeiconsIcon icon={Leaf01Icon} className="size-24 text-muted-foreground/30" />
             </div>
           )}
         </div>
@@ -136,7 +137,7 @@ export default function ProductDetail() {
           <div className="flex flex-wrap gap-2 mb-4">
             {product.is_organic && (
               <Badge variant="success" className="gap-1">
-                <Leaf className="size-3" />
+                <HugeiconsIcon icon={Leaf01Icon} className="size-3" />
                 Organic Certified
               </Badge>
             )}
@@ -202,7 +203,7 @@ export default function ProductDetail() {
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
                   >
-                    <Minus className="size-4" />
+                    <HugeiconsIcon icon={MinusSignIcon} className="size-4" />
                   </Button>
                   <span className="text-lg font-semibold w-12 text-center">{quantity}</span>
                   <Button
@@ -211,7 +212,7 @@ export default function ProductDetail() {
                     onClick={() => setQuantity(Math.min(product.quantity, quantity + 1))}
                     disabled={quantity >= product.quantity}
                   >
-                    <Plus className="size-4" />
+                    <HugeiconsIcon icon={PlusSignIcon} className="size-4" />
                   </Button>
                   <span className="text-sm text-muted-foreground ml-2">
                     {product.quantity} {product.unit} available
@@ -229,7 +230,7 @@ export default function ProductDetail() {
                   'Adding...'
                 ) : (
                   <>
-                    <ShoppingCart className="size-5" />
+                    <HugeiconsIcon icon={ShoppingCart01Icon} className="size-5" />
                     Add to Cart — {formatCurrency(product.price * quantity)}
                   </>
                 )}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,7 +8,8 @@ import { InventoryTable } from '@/components/shared/InventoryTable'
 import { PageHeader, ErrorBanner, EmptyState, Pagination } from '@/components/shared'
 import { inventoryApi } from '@/lib/api'
 import type { InventoryItem } from '@/types'
-import { Plus, Warehouse, Search } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { PlusSignIcon, Search01Icon, WarehouseIcon } from '@hugeicons/core-free-icons'
 
 const categoryOptions = [
   { value: '', label: 'All Categories' },
@@ -68,7 +69,7 @@ export default function Inventory() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
       <PageHeader title="Inventory" description="Track your farm supplies, seeds, fertilizers, and equipment.">
         <Button onClick={() => navigate('/inventory/new')}>
-          <Plus className="size-4" />
+          <HugeiconsIcon icon={PlusSignIcon} className="size-4" />
           Add Item
         </Button>
       </PageHeader>
@@ -77,7 +78,7 @@ export default function Inventory() {
       <div className="mb-6 flex flex-col gap-4 sm:flex-row">
         <form onSubmit={handleSearch} className="flex-1">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search inventory..."
               value={search}

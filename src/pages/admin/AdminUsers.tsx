@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+﻿import { useState, useEffect, useMemo } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { PageSpinner } from '@/components/ui/spinner'
 import { Card, CardContent } from '@/components/ui/card'
@@ -8,7 +8,8 @@ import { Select } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { adminApi } from '@/lib/api'
 import { formatDate } from '@/lib/utils'
-import { Search, Plus, Edit2, Trash2, Key, X, Users, Mail } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Cancel01Icon, Delete02Icon, Edit01Icon, Key01Icon, Mail01Icon, PlusSignIcon, Search01Icon, UserMultipleIcon } from '@hugeicons/core-free-icons'
 import type { User } from '@/types'
 
 // ── Modal Overlay ───────────────────────────────────────────────────────
@@ -113,7 +114,7 @@ export default function AdminUsers() {
           </p>
         </div>
         <Button onClick={() => setShowCreateModal(true)}>
-          <Plus className="size-4" />
+          <HugeiconsIcon icon={PlusSignIcon} className="size-4" />
           Add User
         </Button>
       </div>
@@ -121,7 +122,7 @@ export default function AdminUsers() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search by name or email..."
@@ -164,7 +165,7 @@ export default function AdminUsers() {
                 {filteredUsers.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
-                      <Users className="size-8 mx-auto mb-2 text-muted-foreground/40" />
+                      <HugeiconsIcon icon={UserMultipleIcon} className="size-8 mx-auto mb-2 text-muted-foreground/40" />
                       No users found matching your filters.
                     </td>
                   </tr>
@@ -187,7 +188,7 @@ export default function AdminUsers() {
                             onClick={() => setEditingUser(u)}
                             title="Edit user"
                           >
-                            <Edit2 className="size-4" />
+                            <HugeiconsIcon icon={Edit01Icon} className="size-4" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -204,7 +205,7 @@ export default function AdminUsers() {
                             }}
                             title="Reset password"
                           >
-                            <Key className="size-4" />
+                            <HugeiconsIcon icon={Key01Icon} className="size-4" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -213,7 +214,7 @@ export default function AdminUsers() {
                             disabled={currentUser?.id === u.id}
                             title={currentUser?.id === u.id ? 'Cannot delete yourself' : 'Delete user'}
                           >
-                            <Trash2 className="size-4 text-destructive" />
+                            <HugeiconsIcon icon={Delete02Icon} className="size-4 text-destructive" />
                           </Button>
                         </div>
                       </td>
@@ -269,7 +270,7 @@ export default function AdminUsers() {
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Password Reset</h2>
               <Button variant="ghost" size="icon" onClick={() => setResetResult(null)}>
-                <X className="size-4" />
+                <HugeiconsIcon icon={Cancel01Icon} className="size-4" />
               </Button>
             </div>
             <div className="rounded-md bg-green-50 border border-green-200 p-4">
@@ -373,7 +374,7 @@ function CreateUserModal({
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold">Create User</h2>
         <Button variant="ghost" size="icon" onClick={onClose}>
-          <X className="size-4" />
+          <HugeiconsIcon icon={Cancel01Icon} className="size-4" />
         </Button>
       </div>
 
@@ -515,7 +516,7 @@ function EditUserModal({
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold">Edit User</h2>
         <Button variant="ghost" size="icon" onClick={onClose}>
-          <X className="size-4" />
+          <HugeiconsIcon icon={Cancel01Icon} className="size-4" />
         </Button>
       </div>
 
@@ -591,7 +592,7 @@ function EditUserModal({
           className="w-full"
           onClick={handleResetPassword}
         >
-          <Key className="size-4" />
+          <HugeiconsIcon icon={Key01Icon} className="size-4" />
           Reset Password
         </Button>
       </div>
@@ -640,7 +641,7 @@ function DeleteUserModal({
         <div className="rounded-md bg-muted p-4 space-y-1">
           <p className="font-medium">{user.name}</p>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Mail className="size-3.5" />
+            <HugeiconsIcon icon={Mail01Icon} className="size-3.5" />
             {user.email}
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">

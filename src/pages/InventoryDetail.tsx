@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -10,7 +10,8 @@ import { PageSpinner } from '@/components/ui/spinner'
 import { inventoryApi } from '@/lib/api'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import type { InventoryItem, InventoryTransaction } from '@/types'
-import { ArrowLeft, Plus, Minus, RotateCcw, AlertTriangle, CheckCircle, Clock, Package } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon, CheckmarkCircle01Icon, Clock01Icon, DangerIcon, MinusSignIcon, PackageIcon, PlusSignIcon, RotateLeft01Icon } from '@hugeicons/core-free-icons'
 
 const transactionTypeOptions = [
   { value: 'in', label: 'Stock In' },
@@ -62,12 +63,12 @@ export default function InventoryDetail() {
   }, [id])
 
   const getStockStatus = () => {
-    if (!item) return { label: '', color: 'default' as const, icon: CheckCircle }
+    if (!item) return { label: '', color: 'default' as const, icon: CheckmarkCircle01Icon }
     const ratio = item.quantity / Math.max(item.min_quantity, 1)
-    if (ratio <= 0) return { label: 'Out of Stock', color: 'danger' as const, icon: AlertTriangle }
-    if (ratio <= 0.5) return { label: 'Critical', color: 'danger' as const, icon: AlertTriangle }
-    if (ratio <= 1) return { label: 'Low Stock', color: 'warning' as const, icon: Clock }
-    return { label: 'In Stock', color: 'success' as const, icon: CheckCircle }
+    if (ratio <= 0) return { label: 'Out of Stock', color: 'danger' as const, icon: DangerIcon }
+    if (ratio <= 0.5) return { label: 'Critical', color: 'danger' as const, icon: DangerIcon }
+    if (ratio <= 1) return { label: 'Low Stock', color: 'warning' as const, icon: Clock01Icon }
+    return { label: 'In Stock', color: 'success' as const, icon: CheckmarkCircle01Icon }
   }
 
   const handleAddTransaction = async () => {
@@ -109,11 +110,11 @@ export default function InventoryDetail() {
   if (error || !item) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-12 text-center">
-        <Package className="size-16 text-muted-foreground/30 mx-auto mb-4" />
+        <HugeiconsIcon icon={PackageIcon} className="size-16 text-muted-foreground/30 mx-auto mb-4" />
         <h2 className="text-xl font-semibold">Item Not Found</h2>
         <p className="text-muted-foreground mt-1">{error || 'This inventory item does not exist.'}</p>
         <Button className="mt-4" onClick={() => navigate('/inventory')}>
-          <ArrowLeft className="size-4" />
+          <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
           Back to Inventory
         </Button>
       </div>
@@ -130,7 +131,7 @@ export default function InventoryDetail() {
         onClick={() => navigate('/inventory')}
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        <ArrowLeft className="size-4" />
+        <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
         Back to Inventory
       </button>
 
@@ -204,7 +205,7 @@ export default function InventoryDetail() {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg">Transaction History</CardTitle>
               <Button size="sm" onClick={() => setShowForm(!showForm)}>
-                {showForm ? 'Cancel' : <><Plus className="size-4" /> Add Transaction</>}
+                {showForm ? 'Cancel' : <><HugeiconsIcon icon={PlusSignIcon} className="size-4" /> Add Transaction</>}
               </Button>
             </CardHeader>
             <CardContent>
@@ -253,9 +254,9 @@ export default function InventoryDetail() {
                       className="flex items-center justify-between rounded-lg border border-border p-3 text-sm"
                     >
                       <div className="flex items-center gap-3">
-                        {tx.type === 'in' && <Plus className="size-4 text-green-600" />}
-                        {tx.type === 'out' && <Minus className="size-4 text-red-600" />}
-                        {tx.type === 'adjustment' && <RotateCcw className="size-4 text-amber-600" />}
+                        {tx.type === 'in' && <HugeiconsIcon icon={PlusSignIcon} className="size-4 text-green-600" />}
+                        {tx.type === 'out' && <HugeiconsIcon icon={MinusSignIcon} className="size-4 text-red-600" />}
+                        {tx.type === 'adjustment' && <HugeiconsIcon icon={RotateLeft01Icon} className="size-4 text-amber-600" />}
                         <div>
                           <p className="font-medium capitalize">{tx.type}</p>
                           {tx.notes && (

@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom'
-import { Sprout, Mail, Phone, MapPin } from 'lucide-react'
+﻿import { Link } from 'react-router-dom'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Mail01Icon, MapPinIcon, NaturalFoodIcon, TelephoneIcon } from '@hugeicons/core-free-icons'
 
 /**
  * Site footer with logo, links, and contact info.
@@ -12,7 +13,7 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-3">
             <Link to="/" className="flex items-center gap-2 font-bold text-lg text-primary">
-              <Sprout className="size-6" />
+              <HugeiconsIcon icon={NaturalFoodIcon} className="size-6" />
               <span>Farmify</span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -74,15 +75,15 @@ export function Footer() {
             <h3 className="font-semibold text-sm mb-3">Contact</h3>
             <ul className="space-y-2">
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Mail className="size-4 shrink-0" />
+                <HugeiconsIcon icon={Mail01Icon} className="size-4 shrink-0" />
                 <span>support@farmify.com</span>
               </li>
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Phone className="size-4 shrink-0" />
+                <HugeiconsIcon icon={TelephoneIcon} className="size-4 shrink-0" />
                 <span>+63 (2) 8123 4567</span>
               </li>
               <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                <MapPin className="size-4 shrink-0 mt-0.5" />
+                <HugeiconsIcon icon={MapPinIcon} className="size-4 shrink-0 mt-0.5" />
                 <span>123 Farming Road, Quezon City, Philippines</span>
               </li>
             </ul>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,8 @@ import { PageSpinner } from '@/components/ui/spinner'
 import { ordersApi } from '@/lib/api'
 import { formatCurrency, formatDate, getStatusColor } from '@/lib/utils'
 import type { Order } from '@/types'
-import { ArrowLeft, Package } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon, PackageIcon } from '@hugeicons/core-free-icons'
 
 const statusUpdateOptions = [
   { value: 'pending', label: 'Pending' },
@@ -78,11 +79,11 @@ export default function OrderDetail() {
   if (error || !order) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-12 text-center">
-        <Package className="size-16 text-muted-foreground/30 mx-auto mb-4" />
+        <HugeiconsIcon icon={PackageIcon} className="size-16 text-muted-foreground/30 mx-auto mb-4" />
         <h2 className="text-xl font-semibold">Order Not Found</h2>
         <p className="text-muted-foreground mt-1">{error || 'This order does not exist.'}</p>
         <Button className="mt-4" onClick={() => navigate('/orders')}>
-          <ArrowLeft className="size-4" />
+          <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
           Back to Orders
         </Button>
       </div>
@@ -95,7 +96,7 @@ export default function OrderDetail() {
         onClick={() => navigate('/orders')}
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        <ArrowLeft className="size-4" />
+        <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
         Back to Orders
       </button>
 

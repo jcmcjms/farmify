@@ -1,13 +1,9 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import {
-  CheckCircle2,
-  Clock,
-  AlertTriangle,
-  FileImage,
-} from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { CheckmarkCircle01Icon, Clock01Icon, DangerIcon, Image01Icon } from '@hugeicons/core-free-icons'
 import type { VerificationStatus } from '@/types'
 
 interface StatusViewProps {
@@ -20,7 +16,7 @@ export function VerifiedView({ status }: StatusViewProps) {
       <Card className="border-green-200 bg-gradient-to-br from-green-50 to-emerald-50">
         <CardContent className="p-8 text-center">
           <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-green-100">
-            <CheckCircle2 className="size-8 text-green-600" />
+            <HugeiconsIcon icon={CheckmarkCircle01Icon} className="size-8 text-green-600" />
           </div>
           <h1 className="text-2xl font-bold text-green-800">You are verified!</h1>
           <p className="mt-2 text-green-700">
@@ -82,7 +78,7 @@ export function PendingView({ status }: StatusViewProps) {
       <Card className="border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50">
         <CardContent className="p-8 text-center">
           <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-amber-100">
-            <Clock className="size-8 text-amber-600" />
+            <HugeiconsIcon icon={Clock01Icon} className="size-8 text-amber-600" />
           </div>
           <h1 className="text-2xl font-bold text-amber-800">Your verification is being reviewed</h1>
           <p className="mt-2 text-amber-700 max-w-md mx-auto">
@@ -135,7 +131,7 @@ export function PendingView({ status }: StatusViewProps) {
             <ul className="space-y-2">
               {status.documents.map((doc) => (
                 <li key={doc.id} className="flex items-center gap-3 text-sm">
-                  <FileImage className="size-4 text-muted-foreground shrink-0" />
+                  <HugeiconsIcon icon={Image01Icon} className="size-4 text-muted-foreground shrink-0" />
                   <span className="flex-1">{doc.file_name}</span>
                   <Badge variant="outline" className="text-xs">
                     {doc.document_type.replace(/_/g, ' ')}
@@ -166,7 +162,7 @@ export function RejectedView({ status, onStartForm }: RejectedViewProps) {
       <Card className="border-red-200 bg-gradient-to-br from-red-50 to-rose-50">
         <CardContent className="p-8 text-center">
           <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-red-100">
-            <AlertTriangle className="size-8 text-red-600" />
+            <HugeiconsIcon icon={DangerIcon} className="size-8 text-red-600" />
           </div>
           <h1 className="text-2xl font-bold text-red-800">Your verification was not approved</h1>
           {status?.profile?.verification_notes && (

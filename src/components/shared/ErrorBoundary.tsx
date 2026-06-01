@@ -1,6 +1,7 @@
-import { Component, type ReactNode, type ErrorInfo } from 'react'
+﻿import { Component, type ReactNode, type ErrorInfo } from 'react'
 import { Button } from '@/components/ui/button'
-import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { DangerIcon, RefreshIcon } from '@hugeicons/core-free-icons'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -39,7 +40,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       return (
         <div className="flex min-h-[60vh] flex-col items-center justify-center text-center px-4">
           <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-destructive/10 mb-6">
-            <AlertTriangle className="size-8 text-destructive" />
+            <HugeiconsIcon icon={DangerIcon} className="size-8 text-destructive" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">Something went wrong</h1>
           <p className="mt-2 text-muted-foreground max-w-md">
@@ -52,7 +53,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           )}
           <div className="mt-6 flex gap-4">
             <Button onClick={this.handleReset}>
-              <RefreshCw className="size-4" />
+              <HugeiconsIcon icon={RefreshIcon} className="size-4" />
               Try Again
             </Button>
             <Button variant="outline" onClick={() => window.location.href = '/'}>

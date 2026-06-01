@@ -1,9 +1,10 @@
-import { Link } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 import type { Job } from '@/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { MapPin, Briefcase, Clock, Users } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Briefcase01Icon, Clock01Icon, MapPinIcon, UserMultipleIcon } from '@hugeicons/core-free-icons'
 import { formatDate } from '@/lib/utils'
 
 interface JobCardProps {
@@ -62,21 +63,21 @@ export function JobCard({ job, isOwner }: JobCardProps) {
         <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
           {job.location && (
             <span className="flex items-center gap-1">
-              <MapPin className="size-3.5" />
+              <HugeiconsIcon icon={MapPinIcon} className="size-3.5" />
               {job.location}
             </span>
           )}
           <span className="flex items-center gap-1">
-            <Briefcase className="size-3.5" />
+            <HugeiconsIcon icon={Briefcase01Icon} className="size-3.5" />
             {salaryDisplay()}/{job.salary_type === 'fixed' ? 'fixed' : job.salary_type}
           </span>
           <span className="flex items-center gap-1">
-            <Clock className="size-3.5" />
+            <HugeiconsIcon icon={Clock01Icon} className="size-3.5" />
             Posted {formatDate(job.created_at)}
           </span>
           {job.applications_count !== undefined && (
             <span className="flex items-center gap-1">
-              <Users className="size-3.5" />
+              <HugeiconsIcon icon={UserMultipleIcon} className="size-3.5" />
               {job.applications_count} applicant{job.applications_count !== 1 ? 's' : ''}
             </span>
           )}

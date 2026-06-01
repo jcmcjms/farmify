@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom'
-import { ChevronRight, Home } from 'lucide-react'
+﻿import { Link } from 'react-router-dom'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowRight01Icon, Home01Icon } from '@hugeicons/core-free-icons'
 import { cn } from '@/lib/utils'
 
 export interface BreadcrumbItem {
@@ -26,11 +27,11 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
         className="flex items-center gap-1 hover:text-foreground transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         aria-label="Home"
       >
-        <Home className="size-4" />
+        <HugeiconsIcon icon={Home01Icon} className="size-4" />
       </Link>
       {items.map((item, index) => (
         <span key={item.label} className="flex items-center gap-1.5">
-          <ChevronRight className="size-3.5 shrink-0" aria-hidden="true" />
+          <HugeiconsIcon icon={ArrowRight01Icon} className="size-3.5 shrink-0" aria-hidden="true" />
           {item.href ? (
             <Link
               to={item.href}

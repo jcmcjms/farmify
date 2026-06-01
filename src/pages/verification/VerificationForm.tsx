@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+﻿import { useState, useEffect, useRef, useCallback } from 'react'
 import { authApi } from '@/lib/api'
 import { useForm } from '@/hooks/useForm'
 import { Button } from '@/components/ui/button'
@@ -6,15 +6,8 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import {
-  Upload,
-  X,
-  Image,
-  Tractor,
-  BadgeCheck,
-  ArrowLeft,
-  Save,
-} from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon, Cancel01Icon, CheckmarkBadge01Icon, FloppyDiskIcon, Image01Icon, TractorIcon, Upload01Icon } from '@hugeicons/core-free-icons'
 import type { VerificationStatus } from '@/types'
 import {
   initialFormState,
@@ -253,7 +246,7 @@ export function VerificationForm({ status, onSuccess, onBack }: VerificationForm
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Tractor className="size-5 text-muted-foreground" />
+              <HugeiconsIcon icon={TractorIcon} className="size-5 text-muted-foreground" />
               Farm Profile
             </CardTitle>
             <CardDescription>Tell us about your farm.</CardDescription>
@@ -361,7 +354,7 @@ export function VerificationForm({ status, onSuccess, onBack }: VerificationForm
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Upload className="size-5 text-muted-foreground" />
+              <HugeiconsIcon icon={Upload01Icon} className="size-5 text-muted-foreground" />
               Upload Documents
             </CardTitle>
             <CardDescription>
@@ -432,7 +425,7 @@ export function VerificationForm({ status, onSuccess, onBack }: VerificationForm
                       onClick={() => removeFarmPhoto(index)}
                       className="absolute right-0.5 top-0.5 flex size-5 items-center justify-center rounded-full bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      <X className="size-3" />
+                      <HugeiconsIcon icon={Cancel01Icon} className="size-3" />
                     </button>
                   </div>
                 ))}
@@ -442,7 +435,7 @@ export function VerificationForm({ status, onSuccess, onBack }: VerificationForm
                     onClick={() => farmPhotosRef.current?.click()}
                     className="flex size-24 cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-border text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
                   >
-                    <Image className="size-6" />
+                    <HugeiconsIcon icon={Image01Icon} className="size-6" />
                     <span className="mt-1 text-[10px]">Add Photo</span>
                   </button>
                 )}
@@ -482,7 +475,7 @@ export function VerificationForm({ status, onSuccess, onBack }: VerificationForm
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <BadgeCheck className="size-5 text-muted-foreground" />
+              <HugeiconsIcon icon={CheckmarkBadge01Icon} className="size-5 text-muted-foreground" />
               Review & Submit
             </CardTitle>
             <CardDescription>
@@ -506,12 +499,12 @@ export function VerificationForm({ status, onSuccess, onBack }: VerificationForm
         <div className="flex items-center justify-between">
           {currentStatus === 'rejected' && (
             <Button type="button" variant="ghost" onClick={onBack}>
-              <ArrowLeft className="size-4" />
+              <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
               Back
             </Button>
           )}
           <Button type="submit" disabled={submitting} className="ml-auto">
-            <Save className="size-4" />
+            <HugeiconsIcon icon={FloppyDiskIcon} className="size-4" />
             {submitting ? 'Submitting...' : 'Submit Verification'}
           </Button>
         </div>

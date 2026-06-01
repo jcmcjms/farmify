@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Card, CardContent } from '@/components/ui/card'
@@ -9,7 +9,8 @@ import { PageHeader, ErrorBanner, EmptyState, Pagination } from '@/components/sh
 import { ordersApi } from '@/lib/api'
 import { formatCurrency, formatDate, getStatusColor } from '@/lib/utils'
 import type { Order } from '@/types'
-import { ShoppingBag, Package } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { PackageIcon, ShoppingBag01Icon } from '@hugeicons/core-free-icons'
 
 const statusOptions = [
   { value: '', label: 'All Statuses' },
@@ -109,7 +110,7 @@ export default function Orders() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="rounded-lg bg-muted p-2">
-                        <ShoppingBag className="size-5 text-muted-foreground" />
+                        <HugeiconsIcon icon={ShoppingBag01Icon} className="size-5 text-muted-foreground" />
                       </div>
                       <div>
                         <p className="font-semibold">

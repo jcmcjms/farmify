@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { PageSpinner } from '@/components/ui/spinner'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { adminApi } from '@/lib/api'
-import { Shield, Building2, UserCheck, Check } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Building01Icon, CheckmarkCircle01Icon, Shield01Icon, UserCheck01Icon } from '@hugeicons/core-free-icons'
 
 interface Role {
   name: string
@@ -42,13 +43,13 @@ function formatPermission(code: string): string {
 function getRoleIcon(name: string) {
   switch (name.toLowerCase()) {
     case 'admin':
-      return { icon: Shield, color: 'text-red-600', bg: 'bg-red-100' }
+      return { icon: Shield01Icon, color: 'text-red-600', bg: 'bg-red-100' }
     case 'farmer':
-      return { icon: Building2, color: 'text-green-600', bg: 'bg-green-100' }
+      return { icon: Building01Icon, color: 'text-green-600', bg: 'bg-green-100' }
     case 'buyer':
-      return { icon: UserCheck, color: 'text-blue-600', bg: 'bg-blue-100' }
+      return { icon: UserCheck01Icon, color: 'text-blue-600', bg: 'bg-blue-100' }
     default:
-      return { icon: Shield, color: 'text-muted-foreground', bg: 'bg-muted' }
+      return { icon: Shield01Icon, color: 'text-muted-foreground', bg: 'bg-muted' }
   }
 }
 
@@ -119,7 +120,7 @@ export default function AdminRoles() {
                           key={perm}
                           className="flex items-start gap-2 text-sm text-muted-foreground"
                         >
-                          <Check className="size-4 mt-0.5 shrink-0 text-green-600" />
+                          <HugeiconsIcon icon={CheckmarkCircle01Icon} className="size-4 mt-0.5 shrink-0 text-green-600" />
                           <span>{formatPermission(perm)}</span>
                         </li>
                       ))}
@@ -135,7 +136,7 @@ export default function AdminRoles() {
       {/* Empty state */}
       {roles.length === 0 && !loading && (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <Shield className="size-12 text-muted-foreground/40 mb-4" />
+          <HugeiconsIcon icon={Shield01Icon} className="size-12 text-muted-foreground/40 mb-4" />
           <p className="text-muted-foreground">No roles found.</p>
         </div>
       )}

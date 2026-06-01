@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,7 +9,8 @@ import { cartApi } from '@/lib/api'
 import { formatCurrency } from '@/lib/utils'
 import { useCart } from '@/context/CartContext'
 import type { CartItem } from '@/types'
-import { ShoppingCart, Trash2, Minus, Plus, Package } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Delete02Icon, MinusSignIcon, PackageIcon, PlusSignIcon, ShoppingCart01Icon } from '@hugeicons/core-free-icons'
 
 /**
  * Shopping cart page.
@@ -83,7 +84,7 @@ export default function Cart() {
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-          <ShoppingCart className="size-7" />
+          <HugeiconsIcon icon={ShoppingCart01Icon} className="size-7" />
           Shopping Cart
         </h1>
       </div>
@@ -112,7 +113,7 @@ export default function Cart() {
                       <img src={item.product.image_url} alt={item.product.name} className="size-full object-cover" />
                     ) : (
                       <div className="flex size-full items-center justify-center">
-                        <Package className="size-8 text-muted-foreground/40" />
+                        <HugeiconsIcon icon={PackageIcon} className="size-8 text-muted-foreground/40" />
                       </div>
                     )}
                   </div>
@@ -139,7 +140,7 @@ export default function Cart() {
                       onClick={() => handleQuantityChange(item, item.quantity - 1)}
                       disabled={item.quantity <= 1 || updatingId === item.id}
                     >
-                      <Minus className="size-3" />
+                      <HugeiconsIcon icon={MinusSignIcon} className="size-3" />
                     </Button>
                     <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
                     <Button
@@ -149,7 +150,7 @@ export default function Cart() {
                       onClick={() => handleQuantityChange(item, item.quantity + 1)}
                       disabled={updatingId === item.id}
                     >
-                      <Plus className="size-3" />
+                      <HugeiconsIcon icon={PlusSignIcon} className="size-3" />
                     </Button>
                   </div>
 
@@ -168,7 +169,7 @@ export default function Cart() {
                     onClick={() => handleRemove(item.id)}
                     disabled={updatingId === item.id}
                   >
-                    <Trash2 className="size-4" />
+                    <HugeiconsIcon icon={Delete02Icon} className="size-4" />
                   </Button>
                 </CardContent>
               </Card>

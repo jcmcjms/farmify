@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { PageSpinner } from '@/components/ui/spinner'
 import { Card, CardContent } from '@/components/ui/card'
 import { adminApi } from '@/lib/api'
-import { Users, Package, ShoppingBag, Briefcase, Sprout, Shield, ArrowRight, BadgeCheck } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowRight01Icon, Briefcase01Icon, CheckmarkBadge01Icon, NaturalFoodIcon, PackageIcon, Shield01Icon, ShoppingBag01Icon, UserMultipleIcon } from '@hugeicons/core-free-icons'
 import { formatCurrency } from '@/lib/utils'
 
 interface AdminStats {
@@ -25,35 +26,35 @@ const statCards: {
   {
     key: 'total_users',
     label: 'Total Users',
-    icon: Users,
+    icon: UserMultipleIcon,
     color: 'text-blue-600',
     bgColor: 'bg-blue-100',
   },
   {
     key: 'total_products',
     label: 'Total Products',
-    icon: Package,
+    icon: PackageIcon,
     color: 'text-green-600',
     bgColor: 'bg-green-100',
   },
   {
     key: 'total_orders',
     label: 'Total Orders',
-    icon: ShoppingBag,
+    icon: ShoppingBag01Icon,
     color: 'text-amber-600',
     bgColor: 'bg-amber-100',
   },
   {
     key: 'total_jobs',
     label: 'Total Jobs',
-    icon: Briefcase,
+    icon: Briefcase01Icon,
     color: 'text-purple-600',
     bgColor: 'bg-purple-100',
   },
   {
     key: 'total_revenue',
     label: 'Total Revenue',
-    icon: Sprout,
+    icon: NaturalFoodIcon,
     color: 'text-emerald-600',
     bgColor: 'bg-emerald-100',
     format: (val: number) => formatCurrency(val),
@@ -122,7 +123,7 @@ export default function AdminDashboard() {
                     <p className="text-3xl font-bold mt-1">{displayValue}</p>
                   </div>
                   <div className={`rounded-xl ${stat.bgColor} p-3 ${stat.color}`}>
-                    <stat.icon className="size-6" />
+                    <HugeiconsIcon icon={stat.icon} className="size-6" />
                   </div>
                 </div>
               </CardContent>
@@ -139,7 +140,7 @@ export default function AdminDashboard() {
             <Card className="transition-all hover:shadow-md hover:border-primary/50 cursor-pointer">
               <CardContent className="p-6 flex items-center gap-4">
                 <div className="rounded-xl bg-blue-100 p-3 text-blue-600">
-                  <Users className="size-6" />
+                  <HugeiconsIcon icon={UserMultipleIcon} className="size-6" />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-foreground">User Management</h3>
@@ -147,7 +148,7 @@ export default function AdminDashboard() {
                     Create, edit, and manage all users in the system. Reset passwords and control roles.
                   </p>
                 </div>
-                <ArrowRight className="size-5 text-muted-foreground shrink-0" />
+                <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 text-muted-foreground shrink-0" />
               </CardContent>
             </Card>
           </Link>
@@ -155,7 +156,7 @@ export default function AdminDashboard() {
             <Card className="transition-all hover:shadow-md hover:border-primary/50 cursor-pointer">
               <CardContent className="p-6 flex items-center gap-4">
                 <div className="rounded-xl bg-purple-100 p-3 text-purple-600">
-                  <Shield className="size-6" />
+                  <HugeiconsIcon icon={Shield01Icon} className="size-6" />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-foreground">Roles &amp; Permissions</h3>
@@ -163,7 +164,7 @@ export default function AdminDashboard() {
                     View role definitions, user counts, and the permissions granted to each role.
                   </p>
                 </div>
-                <ArrowRight className="size-5 text-muted-foreground shrink-0" />
+                <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 text-muted-foreground shrink-0" />
               </CardContent>
             </Card>
           </Link>
@@ -171,7 +172,7 @@ export default function AdminDashboard() {
             <Card className="transition-all hover:shadow-md hover:border-primary/50 cursor-pointer">
               <CardContent className="p-6 flex items-center gap-4">
                 <div className="rounded-xl bg-amber-100 p-3 text-amber-600">
-                  <BadgeCheck className="size-6" />
+                  <HugeiconsIcon icon={CheckmarkBadge01Icon} className="size-6" />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-foreground">Farmer Verifications</h3>
@@ -179,7 +180,7 @@ export default function AdminDashboard() {
                     Review and approve farmer verification documents.
                   </p>
                 </div>
-                <ArrowRight className="size-5 text-muted-foreground shrink-0" />
+                <HugeiconsIcon icon={ArrowRight01Icon} className="size-5 text-muted-foreground shrink-0" />
               </CardContent>
             </Card>
           </Link>

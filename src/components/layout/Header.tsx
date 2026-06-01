@@ -1,22 +1,9 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
-import {
-  Sprout,
-  Menu,
-  X,
-  ShoppingCart,
-  LogOut,
-  User,
-  LayoutDashboard,
-  ChevronDown,
-  Package,
-  Briefcase,
-  Warehouse,
-  BadgeCheck,
-  Shield,
-} from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowDown01Icon, Briefcase01Icon, Cancel01Icon, CheckmarkBadge01Icon, DashboardSquare01Icon, Logout01Icon, Menu01Icon, NaturalFoodIcon, PackageIcon, Shield01Icon, ShoppingCart01Icon, UserIcon, WarehouseIcon } from '@hugeicons/core-free-icons'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
@@ -26,7 +13,7 @@ const navLinks = [
 ]
 
 const farmerLinks = [
-  { href: '/inventory', label: 'Inventory', icon: Warehouse },
+  { href: '/inventory', label: 'Inventory', icon: WarehouseIcon },
 ]
 
 /**
@@ -54,7 +41,7 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-bold text-xl text-primary">
-          <Sprout className="size-7" />
+          <HugeiconsIcon icon={NaturalFoodIcon} className="size-7" />
           <span>Farmify</span>
         </Link>
 
@@ -91,7 +78,7 @@ export function Header() {
               {/* Cart icon for buyers only — not admin, not farmer */}
               {!isFarmer && !isAdmin && (
                 <Link to="/cart" className="relative p-2 text-muted-foreground hover:text-foreground transition-colors">
-                  <ShoppingCart className="size-5" />
+                  <HugeiconsIcon icon={ShoppingCart01Icon} className="size-5" />
                 </Link>
               )}
 
@@ -101,9 +88,9 @@ export function Header() {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-2 rounded-full bg-muted px-3 py-1.5 text-sm font-medium hover:bg-muted/80 transition-colors"
                 >
-                  <User className="size-4" />
+                  <HugeiconsIcon icon={UserIcon} className="size-4" />
                   <span className="max-w-[120px] truncate">{user?.name}</span>
-                  <ChevronDown className="size-3.5" />
+                  <HugeiconsIcon icon={ArrowDown01Icon} className="size-3.5" />
                 </button>
 
                 {dropdownOpen && (
@@ -118,7 +105,7 @@ export function Header() {
                         onClick={() => setDropdownOpen(false)}
                         className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted transition-colors"
                       >
-                        <LayoutDashboard className="size-4" />
+                        <HugeiconsIcon icon={DashboardSquare01Icon} className="size-4" />
                         Dashboard
                       </Link>
                       {user?.role === 'farmer' && (
@@ -127,7 +114,7 @@ export function Header() {
                           onClick={() => setDropdownOpen(false)}
                           className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted transition-colors"
                         >
-                          <BadgeCheck className="size-4" />
+                          <HugeiconsIcon icon={CheckmarkBadge01Icon} className="size-4" />
                           Verification
                         </Link>
                       )}
@@ -137,7 +124,7 @@ export function Header() {
                           onClick={() => setDropdownOpen(false)}
                           className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted transition-colors"
                         >
-                          <Shield className="size-4" />
+                          <HugeiconsIcon icon={Shield01Icon} className="size-4" />
                           Admin Panel
                         </Link>
                       )}
@@ -146,7 +133,7 @@ export function Header() {
                         onClick={() => setDropdownOpen(false)}
                         className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted transition-colors"
                       >
-                        <User className="size-4" />
+                        <HugeiconsIcon icon={UserIcon} className="size-4" />
                         Profile
                       </Link>
                       <hr className="my-1 border-border" />
@@ -154,7 +141,7 @@ export function Header() {
                         onClick={handleLogout}
                         className="flex w-full items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-muted transition-colors"
                       >
-                        <LogOut className="size-4" />
+                        <HugeiconsIcon icon={Logout01Icon} className="size-4" />
                         Logout
                       </button>
                     </div>
@@ -180,7 +167,7 @@ export function Header() {
           className="md:hidden p-2 text-muted-foreground hover:text-foreground"
           aria-label="Toggle menu"
         >
-          {mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+          {mobileOpen ? <HugeiconsIcon icon={Cancel01Icon} className="size-6" /> : <HugeiconsIcon icon={Menu01Icon} className="size-6" />}
         </button>
       </div>
 
@@ -200,9 +187,9 @@ export function Header() {
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
             >
-              {link.href === '/marketplace' && <Package className="size-4" />}
-              {link.href === '/jobs' && <Briefcase className="size-4" />}
-              {link.href === '/' && <Sprout className="size-4" />}
+              {link.href === '/marketplace' && <HugeiconsIcon icon={PackageIcon} className="size-4" />}
+              {link.href === '/jobs' && <HugeiconsIcon icon={Briefcase01Icon} className="size-4" />}
+              {link.href === '/' && <HugeiconsIcon icon={NaturalFoodIcon} className="size-4" />}
               {link.label}
             </Link>
           ))}
@@ -214,7 +201,7 @@ export function Header() {
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
               >
-                <link.icon className="size-4" />
+                <HugeiconsIcon icon={link.icon} className="size-4" />
                 {link.label}
               </Link>
             ))}
@@ -228,7 +215,7 @@ export function Header() {
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
               >
-                <LayoutDashboard className="size-4" />
+                <HugeiconsIcon icon={DashboardSquare01Icon} className="size-4" />
                 Dashboard
               </Link>
               {user?.role === 'farmer' && (
@@ -237,7 +224,7 @@ export function Header() {
                   onClick={() => setMobileOpen(false)}
                   className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
                 >
-                  <BadgeCheck className="size-4" />
+                  <HugeiconsIcon icon={CheckmarkBadge01Icon} className="size-4" />
                   Verification
                 </Link>
               )}
@@ -247,7 +234,7 @@ export function Header() {
                   onClick={() => setMobileOpen(false)}
                   className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
                 >
-                  <Shield className="size-4" />
+                  <HugeiconsIcon icon={Shield01Icon} className="size-4" />
                   Admin Panel
                 </Link>
               )}
@@ -256,7 +243,7 @@ export function Header() {
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
               >
-                <User className="size-4" />
+                <HugeiconsIcon icon={UserIcon} className="size-4" />
                 Profile
               </Link>
               {!isFarmer && !isAdmin && (
@@ -265,7 +252,7 @@ export function Header() {
                   onClick={() => setMobileOpen(false)}
                   className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
                 >
-                  <ShoppingCart className="size-4" />
+                  <HugeiconsIcon icon={ShoppingCart01Icon} className="size-4" />
                   Cart
                 </Link>
               )}
@@ -273,7 +260,7 @@ export function Header() {
                 onClick={handleLogout}
                 className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-destructive hover:bg-muted transition-colors"
               >
-                <LogOut className="size-4" />
+                <HugeiconsIcon icon={Logout01Icon} className="size-4" />
                 Logout
               </button>
             </>

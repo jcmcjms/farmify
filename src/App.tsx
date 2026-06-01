@@ -1,7 +1,8 @@
 import { Routes, Route, Outlet } from 'react-router-dom'
 import { AuthProvider } from '@/context/AuthContext'
 import { CartProvider } from '@/context/CartContext'
-import { ToastProvider } from '@/context/ToastContext'
+import { Toaster } from 'sonner'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { Layout } from '@/components/layout/Layout'
 import { AdminLayout } from '@/components/layout/AdminLayout'
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
@@ -9,7 +10,7 @@ import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
 // Lazy-loaded pages for code splitting
 import { lazy, Suspense } from 'react'
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary'
-import { PageSpinner } from '@/components/ui/spinner'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const Landing = lazy(() => import('@/pages/Landing'))
 const Login = lazy(() => import('@/pages/Login'))
@@ -39,7 +40,7 @@ const NotFound = lazy(() => import('@/pages/NotFound'))
  * Wrap a component with Suspense for lazy loading.
  */
 function SuspenseWrapper({ children }: { children: React.ReactNode }) {
-  return <Suspense fallback={<PageSpinner text="Loading page..." />}>{children}</Suspense>
+  return <Suspense fallback={<div className="flex min-h-[60vh] items-center justify-center"><Skeleton className="size-12 rounded-full" /></div>}>{children}</Suspense>
 }
 
 /**
@@ -49,7 +50,8 @@ export default function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <ToastProvider>
+        <TooltipProvider>
+        <Toaster richColors />
         <Layout>
           <ErrorBoundary>
           <Routes>
@@ -297,7 +299,7 @@ export default function App() {
           </Routes>
           </ErrorBoundary>
         </Layout>
-        </ToastProvider>
+        </TooltipProvider>
       </CartProvider>
     </AuthProvider>
   )

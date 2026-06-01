@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+﻿import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from '@/hooks/useForm'
 import { Button } from '@/components/ui/button'
@@ -7,7 +7,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { inventoryApi } from '@/lib/api'
-import { ArrowLeft, Warehouse } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon, WarehouseIcon } from '@hugeicons/core-free-icons'
 
 const categoryOptions = [
   { value: 'seeds', label: 'Seeds' },
@@ -75,14 +76,14 @@ export default function NewInventoryItem() {
         onClick={() => navigate('/inventory')}
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        <ArrowLeft className="size-4" />
+        <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
         Back to Inventory
       </button>
 
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl">
-            <Warehouse className="size-5" />
+            <HugeiconsIcon icon={WarehouseIcon} className="size-5" />
             Add Inventory Item
           </CardTitle>
         </CardHeader>

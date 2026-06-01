@@ -1,5 +1,7 @@
-/* ── Tailwind CSS v4 ───────────────────────────────────────────── */
+/* ── Tailwind CSS v4 + shadcn/ui ─────────────────────────────────── */
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 /* ── Explicit source paths for Tailwind scanner ─────────────────── */
 @source "./components/";
@@ -8,54 +10,138 @@
 @source "./hooks/";
 @source "./lib/";
 
-/* ── Theme Variables ────────────────────────────────────────────── */
+/* ── Dark mode via class (shadcn pattern) ────────────────────────── */
+@custom-variant dark (&:is(.dark *));
+
+/* ── Theme tokens mapped to CSS variables ────────────────────────── */
 @theme inline {
-  --color-background: #fafaf9;
-  --color-foreground: #1c1917;
-  --color-primary: #15803d;
-  --color-primary-foreground: #fafaf9;
-  --color-secondary: #4d7c0f;
-  --color-secondary-foreground: #fafaf9;
-  --color-muted: #f5f5f4;
-  --color-muted-foreground: #78716c;
-  --color-accent: #d97706;
-  --color-accent-foreground: #fafaf9;
-  --color-destructive: #dc2626;
-  --color-destructive-foreground: #fafaf9;
-  --color-border: #e7e5e4;
-  --color-input: #e7e5e4;
-  --color-ring: #15803d;
-  --color-card: #ffffff;
-  --color-card-foreground: #1c1917;
-  --radius: 0.5rem;
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-display: "Fraunces", "Georgia", serif;
+  --font-sans: "Figtree", system-ui, -apple-system, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 
   --animate-fade-in: fade-in 0.6s ease-out;
   --animate-slide-up: slide-up 0.6s ease-out;
   --animate-slide-down: slide-down 0.3s ease-out;
 }
 
-/* ── Dark Mode ──────────────────────────────────────────────────── */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #0c0a09;
-    --color-foreground: #e7e5e4;
-    --color-primary: #22c55e;
-    --color-primary-foreground: #0c0a09;
-    --color-secondary: #84cc16;
-    --color-secondary-foreground: #0c0a09;
-    --color-muted: #1c1917;
-    --color-muted-foreground: #a8a29e;
-    --color-accent: #f59e0b;
-    --color-accent-foreground: #0c0a09;
-    --color-destructive: #ef4444;
-    --color-destructive-foreground: #0c0a09;
-    --color-border: #292524;
-    --color-input: #292524;
-    --color-ring: #22c55e;
-    --color-card: #1c1917;
-    --color-card-foreground: #e7e5e4;
+/* ── Light mode CSS variables ───────────────────────────────────── */
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.809 0.105 251.813);
+  --chart-2: oklch(0.623 0.214 259.815);
+  --chart-3: oklch(0.546 0.245 262.881);
+  --chart-4: oklch(0.488 0.243 264.376);
+  --chart-5: oklch(0.424 0.199 265.638);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+/* ── Dark mode CSS variables ────────────────────────────────────── */
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* ── Base styles ────────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -71,7 +157,7 @@
   }
 }
 
-/* ── Animations (MUST be outside @theme) ────────────────────────── */
+/* ── Animations ─────────────────────────────────────────────────── */
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -87,30 +173,8 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Base Styles ────────────────────────────────────────────────── */
-/* Tailwind v4 Preflight already provides a CSS reset */
-/* These minimal overrides supplement Preflight */
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: var(--font-sans);
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 /* ── Scrollbar ──────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #f5f5f4; }
-::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
-
-/* ── Focus ──────────────────────────────────────────────────────── */
-:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
+::-webkit-scrollbar-track { background: var(--color-muted); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-muted-foreground); }

@@ -1,25 +1,15 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
-import {
-  LayoutDashboard,
-  Users,
-  Shield,
-  BadgeCheck,
-  Sprout,
-  ChevronLeft,
-  Menu,
-  X,
-  LogOut,
-  ChevronDown,
-} from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowDown01Icon, ArrowLeft01Icon, Cancel01Icon, CheckmarkBadge01Icon, DashboardSquare01Icon, Logout01Icon, Menu01Icon, NaturalFoodIcon, Shield01Icon, UserMultipleIcon } from '@hugeicons/core-free-icons'
 
 const navItems = [
-  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-  { href: '/admin/users', label: 'Users', icon: Users },
-  { href: '/admin/roles', label: 'Roles & Permissions', icon: Shield },
-  { href: '/admin/verifications', label: 'Verifications', icon: BadgeCheck },
+  { href: '/admin', label: 'Dashboard', icon: DashboardSquare01Icon, exact: true },
+  { href: '/admin/users', label: 'Users', icon: UserMultipleIcon },
+  { href: '/admin/roles', label: 'Roles & Permissions', icon: Shield01Icon },
+  { href: '/admin/verifications', label: 'Verifications', icon: CheckmarkBadge01Icon },
 ]
 
 interface AdminSidebarProps {
@@ -61,7 +51,7 @@ export function AdminSidebar({ onCollapse }: AdminSidebarProps) {
             collapsed && 'lg:justify-center'
           )}
         >
-          <Sprout className="size-7 shrink-0" />
+          <HugeiconsIcon icon={NaturalFoodIcon} className="size-7 shrink-0" />
           <span className={cn('truncate transition-opacity', collapsed && 'lg:hidden')}>
             Farmify
           </span>
@@ -72,7 +62,7 @@ export function AdminSidebar({ onCollapse }: AdminSidebarProps) {
           className="hidden lg:flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
-          <ChevronLeft className={cn('size-4 transition-transform', collapsed && 'rotate-180')} />
+          <HugeiconsIcon icon={ArrowLeft01Icon} className={cn('size-4 transition-transform', collapsed && 'rotate-180')} />
         </button>
       </div>
 
@@ -82,7 +72,7 @@ export function AdminSidebar({ onCollapse }: AdminSidebarProps) {
         className="absolute right-3 top-3 lg:hidden p-1 text-muted-foreground hover:text-foreground"
         aria-label="Close sidebar"
       >
-        <X className="size-5" />
+        <HugeiconsIcon icon={Cancel01Icon} className="size-5" />
       </button>
 
       {/* Navigation */}
@@ -103,7 +93,7 @@ export function AdminSidebar({ onCollapse }: AdminSidebarProps) {
               )}
               title={collapsed ? item.label : undefined}
             >
-              <item.icon className="size-5 shrink-0" />
+              <HugeiconsIcon icon={item.icon} className="size-5 shrink-0" />
               <span className={cn('truncate', collapsed && 'lg:hidden')}>
                 {item.label}
               </span>
@@ -120,7 +110,7 @@ export function AdminSidebar({ onCollapse }: AdminSidebarProps) {
             className="flex w-full items-center justify-center rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-destructive transition-colors"
             title="Logout"
           >
-            <LogOut className="size-5" />
+            <HugeiconsIcon icon={Logout01Icon} className="size-5" />
           </button>
         ) : (
           <div className="space-y-2">
@@ -139,7 +129,7 @@ export function AdminSidebar({ onCollapse }: AdminSidebarProps) {
                   {user?.role || 'admin'}
                 </p>
               </div>
-              <ChevronDown className={cn('size-4 transition-transform', profileOpen && 'rotate-180')} />
+              <HugeiconsIcon icon={ArrowDown01Icon} className={cn('size-4 transition-transform', profileOpen && 'rotate-180')} />
             </button>
 
             {profileOpen && (
@@ -162,7 +152,7 @@ export function AdminSidebar({ onCollapse }: AdminSidebarProps) {
                   onClick={handleLogout}
                   className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-xs text-destructive hover:bg-muted transition-colors"
                 >
-                  <LogOut className="size-3.5" />
+                  <HugeiconsIcon icon={Logout01Icon} className="size-3.5" />
                   Logout
                 </button>
               </div>
@@ -181,7 +171,7 @@ export function AdminSidebar({ onCollapse }: AdminSidebarProps) {
         className="fixed left-4 top-4 z-40 lg:hidden flex size-9 items-center justify-center rounded-md border border-border bg-white shadow-sm text-muted-foreground hover:text-foreground transition-colors"
         aria-label="Open admin menu"
       >
-        <Menu className="size-5" />
+        <HugeiconsIcon icon={Menu01Icon} className="size-5" />
       </button>
 
       {/* Mobile overlay */}

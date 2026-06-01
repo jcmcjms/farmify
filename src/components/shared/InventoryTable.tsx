@@ -1,8 +1,9 @@
-import { useNavigate } from 'react-router-dom'
+﻿import { useNavigate } from 'react-router-dom'
 import type { InventoryItem } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { formatCurrency } from '@/lib/utils'
-import { AlertTriangle, CheckCircle, Clock } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { CheckmarkCircle01Icon, Clock01Icon, DangerIcon } from '@hugeicons/core-free-icons'
 
 interface InventoryTableProps {
   items: InventoryItem[]
@@ -14,10 +15,10 @@ interface InventoryTableProps {
  */
 function getStockStatus(item: InventoryItem): { label: string; color: 'success' | 'warning' | 'danger'; icon: typeof CheckCircle } {
   const ratio = item.quantity / item.min_quantity
-  if (ratio <= 0) return { label: 'Out of Stock', color: 'danger', icon: AlertTriangle }
-  if (ratio <= 0.5) return { label: 'Critical', color: 'danger', icon: AlertTriangle }
-  if (ratio <= 1) return { label: 'Low Stock', color: 'warning', icon: Clock }
-  return { label: 'In Stock', color: 'success', icon: CheckCircle }
+  if (ratio <= 0) return { label: 'Out of Stock', color: 'danger', icon: DangerIcon }
+  if (ratio <= 0.5) return { label: 'Critical', color: 'danger', icon: DangerIcon }
+  if (ratio <= 1) return { label: 'Low Stock', color: 'warning', icon: Clock01Icon }
+  return { label: 'In Stock', color: 'success', icon: CheckmarkCircle01Icon }
 }
 
 /**
@@ -29,7 +30,7 @@ export function InventoryTable({ items }: InventoryTableProps) {
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <AlertTriangle className="size-12 text-muted-foreground/40 mb-3" />
+        <HugeiconsIcon icon={DangerIcon} className="size-12 text-muted-foreground/40 mb-3" />
         <p className="text-muted-foreground">No inventory items found.</p>
       </div>
     )

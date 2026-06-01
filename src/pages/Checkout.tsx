@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from 'react'
+﻿import { useState, useEffect, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,7 +10,8 @@ import { cartApi, ordersApi } from '@/lib/api'
 import { formatCurrency } from '@/lib/utils'
 import { useCart } from '@/context/CartContext'
 import type { CartItem } from '@/types'
-import { ShoppingBag, ArrowLeft, CheckCircle } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { ArrowLeft01Icon, CheckmarkCircle01Icon, ShoppingBag01Icon } from '@hugeicons/core-free-icons'
 
 /**
  * Checkout page — order summary and shipping details.
@@ -97,7 +98,7 @@ export default function Checkout() {
     return (
       <div className="mx-auto max-w-lg px-4 py-20 text-center animate-fade-in">
         <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-green-100 mb-6">
-          <CheckCircle className="size-8 text-green-600" />
+          <HugeiconsIcon icon={CheckmarkCircle01Icon} className="size-8 text-green-600" />
         </div>
         <h1 className="text-3xl font-bold text-foreground mb-2">Order Placed Successfully!</h1>
         <p className="text-muted-foreground mb-2">
@@ -124,7 +125,7 @@ export default function Checkout() {
         onClick={() => navigate('/cart')}
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        <ArrowLeft className="size-4" />
+        <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
         Back to Cart
       </button>
 
@@ -215,7 +216,7 @@ export default function Checkout() {
                     'Placing Order...'
                   ) : (
                     <>
-                      <ShoppingBag className="size-4" />
+                      <HugeiconsIcon icon={ShoppingBag01Icon} className="size-4" />
                       Place Order
                     </>
                   )}

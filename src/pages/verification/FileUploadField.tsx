@@ -1,4 +1,5 @@
-import { Upload, X } from 'lucide-react'
+﻿import { HugeiconsIcon } from '@hugeicons/react'
+import { Cancel01Icon, Upload01Icon } from '@hugeicons/core-free-icons'
 import type { FileWithPreview } from './types'
 
 interface FileUploadFieldProps {
@@ -51,7 +52,7 @@ export function FileUploadField({
             onClick={onRemove}
             className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted transition-colors"
           >
-            <X className="size-4" />
+            <HugeiconsIcon icon={Cancel01Icon} className="size-4" />
           </button>
         </div>
       ) : (
@@ -60,7 +61,7 @@ export function FileUploadField({
           onClick={() => inputRef.current?.click()}
           className="flex w-full cursor-pointer flex-col items-center gap-1 rounded-md border-2 border-dashed border-border py-6 text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
         >
-          <Upload className="size-6" />
+          <HugeiconsIcon icon={Upload01Icon} className="size-6" />
           <span className="text-sm font-medium">Click to upload</span>
           <span className="text-xs">{accept}</span>
         </button>

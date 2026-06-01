@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { JobCard } from '@/components/shared/JobCard'
@@ -9,7 +9,8 @@ import { Select } from '@/components/ui/select'
 import { PageSpinner } from '@/components/ui/spinner'
 import { jobsApi } from '@/lib/api'
 import type { Job } from '@/types'
-import { Search, Briefcase, Plus } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Briefcase01Icon, PlusSignIcon, Search01Icon } from '@hugeicons/core-free-icons'
 
 const categoryOptions = [
   { value: '', label: 'All Categories' },
@@ -83,7 +84,7 @@ export default function Jobs() {
       <PageHeader title="Job Portal" description="Find farm work or hire skilled workers.">
         {isFarmer && (
           <Button onClick={() => navigate('/jobs/new')}>
-            <Plus className="size-4" />
+            <HugeiconsIcon icon={PlusSignIcon} className="size-4" />
             Post a Job
           </Button>
         )}
@@ -93,7 +94,7 @@ export default function Jobs() {
       <div className="mb-8 flex flex-col gap-4 sm:flex-row">
         <form onSubmit={handleSearch} className="flex-1">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search jobs..."
               value={search}

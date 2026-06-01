@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useCart } from '@/context/CartContext'
@@ -10,7 +10,8 @@ import { PageSpinner } from '@/components/ui/spinner'
 import { ProductCardSkeleton } from '@/components/ui/skeleton'
 import { productsApi } from '@/lib/api'
 import type { Product } from '@/types'
-import { Search, Package, LogIn } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { Login01Icon, PackageIcon, Search01Icon } from '@hugeicons/core-free-icons'
 
 const categoryOptions = [
   { value: '', label: 'All Categories' },
@@ -92,7 +93,7 @@ export default function Products() {
       {/* Auth hint for unauthenticated users */}
       {!isAuthenticated && (
         <div className="mb-6 flex items-center gap-2 rounded-md bg-blue-50 border border-blue-200 p-3 text-sm text-blue-800">
-          <LogIn className="size-4 shrink-0" />
+          <HugeiconsIcon icon={Login01Icon} className="size-4 shrink-0" />
           <span>
             <strong>Sign in</strong> to add items to your cart and purchase products.{' '}
             <button
@@ -109,7 +110,7 @@ export default function Products() {
       <div className="mb-8 flex flex-col gap-4 sm:flex-row">
         <form onSubmit={handleSearch} className="flex-1">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search products..."
               value={search}
