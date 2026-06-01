@@ -25,3 +25,6 @@ dist-ssr
 
 # Design docs
 docs/
+
+# Uploaded files (verification documents, product images, etc.)
+uploads/
