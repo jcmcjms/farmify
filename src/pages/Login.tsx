@@ -38,6 +38,15 @@ export default function Login() {
     setLoading(true)
     try {
       await login({ email, password })
+      // Redirect based on role — admin goes to admin panel, others to dashboard
+      const storedUser = localStorage.getItem('farmify_user')
+      if (storedUser) {
+        const user = JSON.parse(storedUser)
+        if (user.role === 'admin') {
+          navigate('/admin')
+          return
+        }
+      }
       navigate('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.')

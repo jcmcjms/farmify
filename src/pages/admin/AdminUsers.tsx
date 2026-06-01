@@ -103,7 +103,7 @@ export default function AdminUsers() {
   if (loading) return <PageSpinner text="Loading users..." />
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
+    <div className="p-6 lg:p-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>

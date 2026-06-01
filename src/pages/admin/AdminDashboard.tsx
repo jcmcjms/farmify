@@ -88,7 +88,7 @@ export default function AdminDashboard() {
   if (loading) return <PageSpinner text="Loading admin dashboard..." />
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
+    <div className="p-6 lg:p-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>

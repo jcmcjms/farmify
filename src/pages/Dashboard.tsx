@@ -33,6 +33,12 @@ export default function Dashboard() {
       return
     }
 
+    // Admins belong in the admin panel, not the user dashboard
+    if (user?.role === 'admin') {
+      navigate('/admin')
+      return
+    }
+
     const fetchStats = async () => {
       try {
         const res = await dashboardApi.getStats()

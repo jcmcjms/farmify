@@ -149,7 +149,7 @@ export default function AdminVerifications() {
   // ── Detail View ──
   if (detail) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
+      <div className="p-6 lg:p-8 max-w-4xl">
         <button
           onClick={closeDetail}
           className="mb-4 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -390,7 +390,7 @@ export default function AdminVerifications() {
 
   // ── List View ──
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in">
+    <div className="p-6 lg:p-8">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground">Farmer Verifications</h1>
         <p className="mt-1 text-muted-foreground">

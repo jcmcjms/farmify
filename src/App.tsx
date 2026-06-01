@@ -1,7 +1,8 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Outlet } from 'react-router-dom'
 import { AuthProvider } from '@/context/AuthContext'
 import { CartProvider } from '@/context/CartContext'
 import { Layout } from '@/components/layout/Layout'
+import { AdminLayout } from '@/components/layout/AdminLayout'
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
 
 // Lazy-loaded pages for code splitting
@@ -235,47 +236,49 @@ export default function App() {
               }
             />
 
-            {/* Admin routes */}
+            {/* Admin routes — wrapped in AdminLayout with sidebar */}
             <Route
-              path="/admin"
               element={
                 <ProtectedRoute requiredRole="admin">
+                  <AdminLayout>
+                    <Outlet />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            >
+              <Route
+                path="/admin"
+                element={
                   <SuspenseWrapper>
                     <AdminDashboard />
                   </SuspenseWrapper>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/users"
-              element={
-                <ProtectedRoute requiredRole="admin">
+                }
+              />
+              <Route
+                path="/admin/users"
+                element={
                   <SuspenseWrapper>
                     <AdminUsers />
                   </SuspenseWrapper>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/roles"
-              element={
-                <ProtectedRoute requiredRole="admin">
+                }
+              />
+              <Route
+                path="/admin/roles"
+                element={
                   <SuspenseWrapper>
                     <AdminRoles />
                   </SuspenseWrapper>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/verifications"
-              element={
-                <ProtectedRoute requiredRole="admin">
+                }
+              />
+              <Route
+                path="/admin/verifications"
+                element={
                   <SuspenseWrapper>
                     <AdminVerifications />
                   </SuspenseWrapper>
-                </ProtectedRoute>
-              }
-            />
+                }
+              />
+            </Route>
 
             {/* 404 */}
             <Route
