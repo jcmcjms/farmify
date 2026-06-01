@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Header } from './Header'
 import { Footer } from './Footer'
 
@@ -8,8 +9,19 @@ interface LayoutProps {
 
 /**
  * Main layout wrapper with header, content area, and footer.
+ *
+ * For admin routes (/admin/*), the Header and Footer are skipped
+ * because AdminLayout provides its own dedicated sidebar layout.
  */
 export function Layout({ children }: LayoutProps) {
+  const location = useLocation()
+  const isAdminRoute = location.pathname.startsWith('/admin')
+
+  // Admin routes have their own layout (AdminLayout + sidebar)
+  if (isAdminRoute) {
+    return <>{children}</>
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Skip to content link for keyboard/screen reader users */}

@@ -15,6 +15,7 @@ import {
   Briefcase,
   Warehouse,
   BadgeCheck,
+  Shield,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -46,6 +47,7 @@ export function Header() {
   }
 
   const isFarmer = user?.role === 'farmer'
+  const isAdmin = user?.role === 'admin'
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
@@ -56,36 +58,38 @@ export function Header() {
           <span>Farmify</span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              to={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              aria-current={location.pathname === link.href ? 'page' : undefined}
-            >
-              {link.label}
-            </Link>
-          ))}
-          {isFarmer &&
-            farmerLinks.map((link) => (
+        {/* Desktop Navigation — skip for admins (they use the sidebar) */}
+        {!isAdmin && (
+          <nav className="hidden md:flex items-center gap-6">
+            {navLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
                 className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                aria-current={location.pathname === link.href ? 'page' : undefined}
               >
                 {link.label}
               </Link>
             ))}
-        </nav>
+            {isFarmer &&
+              farmerLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {link.label}
+                </Link>
+              ))}
+          </nav>
+        )}
 
         {/* Desktop Auth Controls */}
         <div className="hidden md:flex items-center gap-3">
           {isAuthenticated ? (
             <>
-              {/* Cart icon for buyers */}
-              {!isFarmer && (
+              {/* Cart icon for buyers only — not admin, not farmer */}
+              {!isFarmer && !isAdmin && (
                 <Link to="/cart" className="relative p-2 text-muted-foreground hover:text-foreground transition-colors">
                   <ShoppingCart className="size-5" />
                 </Link>
@@ -125,6 +129,16 @@ export function Header() {
                         >
                           <BadgeCheck className="size-4" />
                           Verification
+                        </Link>
+                      )}
+                      {isAdmin && (
+                        <Link
+                          to="/admin"
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted transition-colors"
+                        >
+                          <Shield className="size-4" />
+                          Admin Panel
                         </Link>
                       )}
                       <Link
@@ -178,7 +192,8 @@ export function Header() {
         )}
       >
         <nav className="space-y-1 px-4 py-3">
-          {navLinks.map((link) => (
+          {/* Admin nav links are hidden in mobile too — admins use the sidebar */}
+          {!isAdmin && navLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
@@ -191,7 +206,7 @@ export function Header() {
               {link.label}
             </Link>
           ))}
-          {isFarmer &&
+          {isFarmer && !isAdmin &&
             farmerLinks.map((link) => (
               <Link
                 key={link.href}
@@ -226,6 +241,16 @@ export function Header() {
                   Verification
                 </Link>
               )}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
+                >
+                  <Shield className="size-4" />
+                  Admin Panel
+                </Link>
+              )}
               <Link
                 to="/profile"
                 onClick={() => setMobileOpen(false)}
@@ -234,7 +259,7 @@ export function Header() {
                 <User className="size-4" />
                 Profile
               </Link>
-              {!isFarmer && (
+              {!isFarmer && !isAdmin && (
                 <Link
                   to="/cart"
                   onClick={() => setMobileOpen(false)}
