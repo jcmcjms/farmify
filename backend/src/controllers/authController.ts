@@ -5,7 +5,11 @@ import { z } from 'zod';
 import pool from '../config/database.js';
 import { AuthenticatedRequest } from '../types/index.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_do_not_use_in_production';
+const rawSecret = process.env.JWT_SECRET;
+if (!rawSecret) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+const JWT_SECRET: string = rawSecret;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 // ── Validation Schemas ─────────────────────────────────────────────────

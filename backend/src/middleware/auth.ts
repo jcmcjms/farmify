@@ -2,7 +2,11 @@ import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { AuthenticatedRequest, JwtPayload } from '../types/index.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_do_not_use_in_production';
+const rawSecret = process.env.JWT_SECRET;
+if (!rawSecret) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+const JWT_SECRET: string = rawSecret;
 
 /**
  * Authenticate middleware — verifies JWT from Authorization header (Bearer token).
@@ -36,7 +40,7 @@ export function authenticate(
   const token = parts[1];
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const decoded = jwt.verify(token, JWT_SECRET) as unknown as JwtPayload;
     req.user = {
       id: decoded.id,
       name: decoded.name,
@@ -91,7 +95,7 @@ export function optionalAuth(
   const token = parts[1];
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const decoded = jwt.verify(token, JWT_SECRET) as unknown as JwtPayload;
     req.user = {
       id: decoded.id,
       name: decoded.name,

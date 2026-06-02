@@ -16,9 +16,6 @@ type ValidationRules<T extends Record<string, unknown>> = {
   [K in keyof T]?: ValidationRule<T, K>
 }
 
-/** @internal */
-type RulesRef<T extends Record<string, unknown>> = ValidationRules<T> | null
-
 /**
  * Return type of the `useForm` hook.
  */
@@ -78,7 +75,6 @@ export function useForm<T extends Record<string, unknown>>(
 ): UseFormReturn<T> {
   const [form, setFormState] = useState<T>(initialValues)
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const rulesRef = useRef<RulesRef>(null)
 
   // Keep a ref of initial values so resetForm can restore them
   const initialRef = useRef<T>(initialValues)

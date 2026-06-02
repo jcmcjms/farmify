@@ -38,14 +38,20 @@
 | **Build Tool** | Vite 8 |
 | **Routing** | React Router v7 (lazy-loaded routes) |
 | **Styling** | Tailwind CSS v4 via `@tailwindcss/vite` plugin |
-| **UI Components** | shadcn/ui (Button, Input, Select, Badge, Card, Tabs, Dialog, DropdownMenu, Checkbox, Label) on Radix UI primitives |
-| **Icons** | Lucide React |
+| **UI Components** | shadcn/ui (base-maia preset) — Button, Input, Select, Badge, Card, Tabs, Dialog, DropdownMenu, Checkbox, Label, Tooltip on Radix UI primitives |
+| **Icons** | Hugeicons (`@hugeicons/core-free-icons` + `@hugeicons/react`) via shadcn maia preset |
 | **Utilities** | class-variance-authority, tailwind-merge, clsx |
+| **State Management** | React Context for auth + cart; `useForm` hook for form state |
+| **Testing** | Vitest + React Testing Library + jsdom |
+| **Formatting** | Prettier + Husky pre-commit hooks with lint-staged |
+| **Error Tracking** | Sentry (`@sentry/react` for frontend, `@sentry/node` for backend) |
 | **Backend** | Express (REST API, port 5000) |
 | **Database** | PostgreSQL with raw SQL queries |
-| **Validation** | Zod |
-| **Authentication** | JWT (bcryptjs for password hashing) |
+| **Validation** | Zod (backend) + custom `useForm` hook (frontend) |
+| **Authentication** | JWT (bcryptjs for password hashing), helmet security headers, rate limiting |
 | **File Uploads** | Multer (verification documents) |
+| **Docker** | Multi-stage Dockerfile (nginx for frontend) + Docker Compose (frontend, backend, PostgreSQL) |
+| **CI/CD** | GitHub Actions — lint, type-check, and build on push/PR to main |
 
 ---
 
@@ -279,6 +285,9 @@ The Vite dev server proxies `/api` and `/uploads` requests to the backend at `lo
 | `npm run build` | TypeScript check + Vite production build |
 | `npm run build:backend` | Compile backend TypeScript |
 | `npm run build:all` | Build both frontend and backend |
+| `npm run test` | Run Vitest unit tests (single run) |
+| `npm run test:watch` | Run Vitest in watch mode |
+| `npm run test:coverage` | Run Vitest with coverage report |
 | `npm run lint` | Run ESLint across the frontend |
 | `npm run preview` | Preview the production build |
 
@@ -291,6 +300,40 @@ The Vite dev server proxies `/api` and `/uploads` requests to the backend at `lo
 | `npm run start` | Run compiled server from dist/ |
 | `npm run db:init` | Initialize database schema |
 | `npm run db:seed` | Seed sample data |
+
+---
+
+## Docker
+
+The project includes Docker support for production-like environments:
+
+```bash
+# Build and start all services
+docker compose up -d --build
+
+# Stop all services
+docker compose down
+
+# View logs
+docker compose logs -f
+```
+
+Three services are defined:
+- **db** — PostgreSQL 16, persistent volume for data
+- **backend** — Express API built from `backend/`, port 5000
+- **frontend** — Nginx serving the built SPA, port 80, with API proxy
+
+---
+
+## CI/CD
+
+A GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push/PR to `main`:
+
+| Job | Description |
+|-----|-------------|
+| **lint** | ESLint check across frontend |
+| **typecheck** | TypeScript type checking (frontend + backend) |
+| **build** | Full production build (frontend + backend) — gated on lint + typecheck |
 
 ---
 

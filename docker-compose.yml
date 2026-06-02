@@ -1,0 +1,67 @@
+# =============================================================================
+# Farmify — Docker Compose
+# Three services: PostgreSQL 16, Express API backend, React/Vite frontend
+# =============================================================================
+
+version: "3.9"
+
+services:
+  # ── Database ────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: farmify-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: farmify
+      POSTGRES_PASSWORD: farmify_secret_2026
+      POSTGRES_DB: farmify
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U farmify -d farmify"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ── Backend API ─────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: farmify-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: "5000"
+      DATABASE_URL: postgresql://farmify:farmify_secret_2026@db:5432/farmify
+      JWT_SECRET: farmify_jwt_secret_key_2026_secure
+      JWT_EXPIRES_IN: 7d
+    volumes:
+      # Persist uploaded files (verification docs, product images, etc.)
+      - uploads:/app/uploads
+
+  # ── Frontend (Nginx SPA) ────────────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: farmify-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+    driver: local
+  uploads:
+    driver: local

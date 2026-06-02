@@ -3,7 +3,13 @@ dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import { errorHandler } from './middleware/errorHandler.js';
+import { globalLimiter, authLimiter } from './middleware/rateLimiter.js';
+import { initSentry, Sentry } from './config/sentry.js';
+
+// Initialize Sentry error tracking (only activates if SENTRY_DSN is set)
+initSentry();
 
 // ── Route Imports ──────────────────────────────────────────────────────
 import authRoutes from './routes/auth.js';
@@ -32,6 +38,27 @@ app.use(
   })
 );
 
+// Security headers (helmet) — must be before any routes
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        // Allow Vite dev server and inline styles/styles from same origin
+        styleSrc: ["'self'", "'unsafe-inline'", 'http://localhost:5173'],
+        scriptSrc: ["'self'", 'http://localhost:5173'],
+        connectSrc: ["'self'", 'http://localhost:5173', 'ws://localhost:5173'],
+        imgSrc: ["'self'", 'data:', 'blob:'],
+        fontSrc: ["'self'", 'data:'],
+      },
+    },
+    crossOriginEmbedderPolicy: false, // Needed for Vite HMR WebSocket
+  })
+);
+
+// Global rate limiter — 100 requests per 15 minutes per IP
+app.use(globalLimiter);
+
 // JSON body parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -54,8 +81,8 @@ app.get('/api/health', (_req, res) => {
 
 // ── API Routes ─────────────────────────────────────────────────────────
 
-app.use('/api/auth', authRoutes);
-app.use('/api/auth', verificationRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/auth', authLimiter, verificationRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/jobs', jobRoutes);
@@ -73,6 +100,10 @@ app.use((_req, res) => {
     error: 'Route not found.',
   });
 });
+
+// ── Sentry Error Handler ───────────────────────────────────────────────
+
+Sentry.setupExpressErrorHandler(app);
 
 // ── Global Error Handler ───────────────────────────────────────────────
 
