@@ -41,6 +41,10 @@ export default function Login() {
           navigate('/admin')
           return
         }
+        if (user.role === 'driver') {
+          navigate('/deliveries/dashboard')
+          return
+        }
       }
       navigate('/dashboard')
     } catch (err) {

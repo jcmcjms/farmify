@@ -7,30 +7,57 @@ import { Badge } from '@/components/ui/badge'
 import { Select } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { PageSpinner } from '@/components/ui/spinner'
-import { ordersApi } from '@/lib/api'
+import { ordersApi, deliveriesApi } from '@/lib/api'
 import { formatCurrency, formatDate, getStatusColor } from '@/lib/utils'
-import type { Order } from '@/types'
+import type { Order, Delivery } from '@/types'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { ArrowLeft01Icon, PackageIcon } from '@hugeicons/core-free-icons'
+import {
+  ArrowLeft01Icon,
+  PackageIcon,
+  DeliveryTruck01Icon,
+  CheckmarkCircle01Icon,
+} from '@hugeicons/core-free-icons'
 
 const statusUpdateOptions = [
   { value: 'pending', label: 'Pending' },
   { value: 'confirmed', label: 'Confirmed' },
-  { value: 'shipped', label: 'Shipped' },
-  { value: 'delivered', label: 'Delivered' },
+  { value: 'ready_for_pickup', label: 'Ready for Pickup' },
   { value: 'cancelled', label: 'Cancelled' },
 ]
 
+const statusLabels: Record<string, string> = {
+  pending: 'Pending',
+  confirmed: 'Confirmed',
+  ready_for_pickup: 'Ready for Pickup',
+  picked_up: 'Picked Up',
+  in_transit: 'In Transit',
+  delivered: 'Delivered',
+  cancelled: 'Cancelled',
+}
+
+const deliveryStatusLabels: Record<string, string> = {
+  waiting_assignment: 'Waiting for Driver',
+  assigned: 'Driver Assigned',
+  accepted: 'Driver Accepted',
+  picked_up: 'Picked Up',
+  in_transit: 'In Transit',
+  delivered: 'Delivered',
+  failed: 'Failed',
+  cancelled: 'Cancelled',
+}
+
 /**
- * Order detail — view order info, items, and update status (farmer only).
+ * Order detail — view order info, items, and delivery tracking.
  */
 export default function OrderDetail() {
   const { id } = useParams<{ id: string }>()
   const { user } = useAuth()
   const navigate = useNavigate()
   const isFarmer = user?.role === 'farmer'
+  const isBuyer = user?.role === 'buyer'
 
   const [order, setOrder] = useState<Order | null>(null)
+  const [delivery, setDelivery] = useState<Delivery | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [updating, setUpdating] = useState(false)
@@ -45,6 +72,19 @@ export default function OrderDetail() {
         const res = await ordersApi.getById(Number(id))
         if (res.data) {
           setOrder(res.data)
+
+          // Also fetch delivery if order is past confirmed
+          const orderStatus = res.data.status
+          if (['ready_for_pickup', 'picked_up', 'in_transit', 'delivered'].includes(orderStatus)) {
+            try {
+              const delRes = await deliveriesApi.getByOrder(res.data.id)
+              if (delRes.data) {
+                setDelivery(delRes.data)
+              }
+            } catch {
+              // Delivery might not exist yet — that's ok
+            }
+          }
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load order')
@@ -66,6 +106,18 @@ export default function OrderDetail() {
       })
       if (res.data) {
         setOrder(res.data)
+
+        // If just marked ready_for_pickup, try to load delivery
+        if (newStatus === 'ready_for_pickup') {
+          try {
+            const delRes = await deliveriesApi.getByOrder(res.data.id)
+            if (delRes.data) {
+              setDelivery(delRes.data)
+            }
+          } catch {
+            // Will appear once auto-assign runs
+          }
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update status')
@@ -108,7 +160,7 @@ export default function OrderDetail() {
           </p>
         </div>
         <Badge className={`text-sm px-3 py-1 ${getStatusColor(order.status)}`}>
-          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+          {statusLabels[order.status] || order.status.charAt(0).toUpperCase() + order.status.slice(1)}
         </Badge>
       </div>
 
@@ -176,25 +228,186 @@ export default function OrderDetail() {
         </CardContent>
       </Card>
 
-      {/* Status Update (Farmer only) */}
-      {isFarmer && (
-        <Card>
+      {/* Delivery Tracking (Buyer View) */}
+      {isBuyer && delivery && (
+        <Card className="mb-6 border-l-4 border-l-primary">
           <CardHeader>
-            <CardTitle className="text-lg">Update Status</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <DeliveryTruck01Icon className="size-5 text-primary" />
+              Delivery Status
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <Select
-                  value={order.status}
-                  onChange={(e) => handleStatusChange(e.target.value)}
-                  options={statusUpdateOptions}
-                />
+          <CardContent className="space-y-3">
+            {/* Driver Info */}
+            <div className="rounded-md bg-muted/50 p-3">
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Driver</span>
+                  <p className="font-medium">{delivery.driver_name || 'Assigning...'}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Vehicle</span>
+                  <p className="font-medium">{delivery.driver_vehicle || '—'}</p>
+                </div>
+                {delivery.driver_phone && (
+                  <div className="col-span-2">
+                    <span className="text-muted-foreground">Contact</span>
+                    <p className="font-medium">{delivery.driver_phone}</p>
+                  </div>
+                )}
               </div>
-              {updating && (
-                <span className="text-sm text-muted-foreground animate-pulse">Updating...</span>
-              )}
             </div>
+
+            {/* Status */}
+            <div className="flex items-center gap-2 text-sm">
+              <Badge className="bg-primary/10 text-primary border border-primary/20">
+                {deliveryStatusLabels[delivery.status] || delivery.status}
+              </Badge>
+            </div>
+
+            {/* Timeline Steps */}
+            <div className="flex items-center justify-between pt-2">
+              {['accepted', 'picked_up', 'in_transit', 'delivered'].map((step, i) => {
+                const stepOrder = ['accepted', 'picked_up', 'in_transit', 'delivered']
+                const currentIdx = stepOrder.indexOf(delivery.status)
+                const stepIdx = stepOrder.indexOf(step)
+                const completed = stepIdx <= currentIdx
+
+                return (
+                  <div key={step} className="flex flex-col items-center gap-1">
+                    <div
+                      className={`size-7 rounded-full flex items-center justify-center text-xs
+                        ${completed
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted text-muted-foreground'
+                        }`}
+                    >
+                      {completed ? (
+                        <HugeiconsIcon icon={CheckmarkCircle01Icon} className="size-4" />
+                      ) : (
+                        i + 1
+                      )}
+                    </div>
+                    <span className={`text-[10px] ${completed ? 'font-medium' : 'text-muted-foreground'}`}>
+                      {step === 'accepted' ? 'Accepted'
+                        : step === 'picked_up' ? 'Picked Up'
+                        : step === 'in_transit' ? 'In Transit'
+                        : 'Delivered'}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Delivery Tracking (Farmer View) */}
+      {isFarmer && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <DeliveryTruck01Icon className="size-5 text-primary" />
+              Delivery Management
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {delivery ? (
+              <>
+                {/* Driver Info */}
+                <div className="rounded-md bg-muted/50 p-3">
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Driver</span>
+                      <p className="font-medium">{delivery.driver_name || '—'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Vehicle</span>
+                      <p className="font-medium">{delivery.driver_vehicle || '—'}</p>
+                    </div>
+                    {delivery.driver_phone && (
+                      <div>
+                        <span className="text-muted-foreground">Contact</span>
+                        <p className="font-medium">{delivery.driver_phone}</p>
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-muted-foreground">Status</span>
+                      <p className="font-medium">{deliveryStatusLabels[delivery.status] || delivery.status}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Delivery Timeline */}
+                {delivery.status !== 'waiting_assignment' && (
+                  <div className="flex items-center justify-between pt-1">
+                    {['accepted', 'picked_up', 'in_transit', 'delivered'].map((step) => {
+                      const stepOrder = ['accepted', 'picked_up', 'in_transit', 'delivered']
+                      const currentIdx = stepOrder.indexOf(delivery.status)
+                      const stepIdx = stepOrder.indexOf(step)
+                      const completed = stepIdx <= currentIdx
+
+                      return (
+                        <div key={step} className="flex flex-col items-center gap-1">
+                          <div
+                            className={`size-6 rounded-full flex items-center justify-center text-[10px]
+                              ${completed
+                                ? 'bg-primary text-primary-foreground'
+                                : 'bg-muted text-muted-foreground'
+                              }`}
+                          >
+                            {completed ? '✓' : stepIdx + 1}
+                          </div>
+                          <span className={`text-[10px] ${completed ? 'font-medium' : 'text-muted-foreground'}`}>
+                            {step === 'accepted' ? 'Accept'
+                              : step === 'picked_up' ? 'Pickup'
+                              : step === 'in_transit' ? 'Transit'
+                              : 'Deliver'}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </>
+            ) : (
+              /* No delivery yet — farmer can mark ready */
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  No driver assigned yet. Auto-assign will find a driver when you mark the order as ready for pickup.
+                </p>
+
+                {/* Status Update Controls */}
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <Select
+                      value={order.status}
+                      onChange={(e) => handleStatusChange(e.target.value)}
+                      options={statusUpdateOptions}
+                    />
+                  </div>
+                  {updating && (
+                    <span className="text-sm text-muted-foreground animate-pulse">Updating...</span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Show status select even when delivery exists for manual override */}
+            {delivery && (
+              <div className="flex items-center gap-4 pt-2 border-t">
+                <div className="flex-1">
+                  <Select
+                    value={order.status}
+                    onChange={(e) => handleStatusChange(e.target.value)}
+                    options={statusUpdateOptions}
+                  />
+                </div>
+                {updating && (
+                  <span className="text-sm text-muted-foreground animate-pulse">Updating...</span>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

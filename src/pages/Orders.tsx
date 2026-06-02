@@ -16,10 +16,22 @@ const statusOptions = [
   { value: '', label: 'All Statuses' },
   { value: 'pending', label: 'Pending' },
   { value: 'confirmed', label: 'Confirmed' },
-  { value: 'shipped', label: 'Shipped' },
+  { value: 'ready_for_pickup', label: 'Ready for Pickup' },
+  { value: 'picked_up', label: 'Picked Up' },
+  { value: 'in_transit', label: 'In Transit' },
   { value: 'delivered', label: 'Delivered' },
   { value: 'cancelled', label: 'Cancelled' },
 ]
+
+const statusLabels: Record<string, string> = {
+  pending: 'Pending',
+  confirmed: 'Confirmed',
+  ready_for_pickup: 'Ready for Pickup',
+  picked_up: 'Picked Up',
+  in_transit: 'In Transit',
+  delivered: 'Delivered',
+  cancelled: 'Cancelled',
+}
 
 /**
  * Orders page — list of orders with status filter.
@@ -83,7 +95,7 @@ export default function Orders() {
 
       {!loading && !error && orders.length === 0 && (
         <EmptyState
-          icon={Package}
+          icon={PackageIcon}
           title="No orders found"
           description={
             statusFilter
@@ -125,7 +137,7 @@ export default function Orders() {
                     <div className="text-right">
                       <p className="font-bold">{formatCurrency(order.total_amount)}</p>
                       <Badge className={`mt-1 ${getStatusColor(order.status)}`}>
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        {statusLabels[order.status] || order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                       </Badge>
                     </div>
                   </div>

@@ -1,43 +1,55 @@
-﻿import { useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useForm } from '@/hooks/useForm'
+import { driversApi } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { NaturalFoodIcon, UserAdd01Icon } from '@hugeicons/core-free-icons'
+import { DeliveryTruck01Icon, NaturalFoodIcon } from '@hugeicons/core-free-icons'
+import type { DriverProfile } from '@/types'
 
-const roleOptions = [
-  { value: 'farmer', label: 'Farmer' },
-  { value: 'buyer', label: 'Buyer' },
+const vehicleOptions = [
+  { value: 'bike', label: 'Bicycle' },
+  { value: 'motorcycle', label: 'Motorcycle' },
+  { value: 'car', label: 'Car' },
+  { value: 'truck', label: 'Truck' },
+  { value: 'van', label: 'Van' },
 ]
 
 /**
- * Register page with full form validation.
+ * DriverRegister page — registration form for delivery riders.
  */
-export default function Register() {
+export default function DriverRegister() {
   const { register } = useAuth()
   const navigate = useNavigate()
 
-  const { form, errors, setField, setFields, validate, validateField } = useForm({
+  const { form, errors, setField, validate, validateField } = useForm({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'farmer' as 'farmer' | 'buyer',
     phone: '',
+    vehicleType: 'motorcycle' as string,
+    vehiclePlate: '',
+    serviceArea: '',
+    serviceRadius: '10',
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [registered, setRegistered] = useState(false)
 
   const rules = {
     name: (v: string) => !v?.trim() ? 'Name is required' : undefined,
     email: (v: string) => !v?.trim() ? 'Email is required' : !/\S+@\S+\.\S+/.test(v) ? 'Invalid email format' : undefined,
     password: (v: string) => !v ? 'Password is required' : v.length < 6 ? 'Password must be at least 6 characters' : undefined,
-    confirmPassword: (v: string, f: Record<string, unknown>) => !f.confirmPassword ? 'Please confirm your password' : f.password !== f.confirmPassword ? 'Passwords do not match' : undefined,
-    role: (v: string) => !v ? 'Please select a role' : undefined,
+    confirmPassword: (v: string, f: Record<string, unknown>) =>
+      !f.confirmPassword ? 'Please confirm your password' : f.password !== f.confirmPassword ? 'Passwords do not match' : undefined,
+    phone: (v: string) => v && !/^[\d\s\-+()]{7,}$/.test(v) ? 'Invalid phone number' : undefined,
+    vehiclePlate: (v: string) => !v?.trim() ? 'Vehicle plate is required' : undefined,
+    serviceArea: (v: string) => !v?.trim() ? 'Service area is required' : undefined,
   }
 
   const handleSubmit = async (e: FormEvent) => {
@@ -48,28 +60,60 @@ export default function Register() {
 
     setLoading(true)
     try {
+      // Register as 'buyer' (backend only accepts 'farmer' | 'buyer')
       await register({
         name: form.name,
         email: form.email,
         password: form.password,
-        role: form.role,
+        role: 'buyer',
         phone: form.phone || undefined,
       })
-      // Redirect based on role
+
+      // Save driver profile with vehicle info
+      try {
+        await driversApi.updateProfile({
+          vehicle_type: form.vehicleType as DriverProfile['vehicle_type'],
+          vehicle_plate: form.vehiclePlate,
+          service_area: form.serviceArea,
+          service_radius_km: Number(form.serviceRadius),
+        })
+      } catch {
+        // Profile save is best-effort; registration already succeeded
+      }
+
+      // Mark user as driver in localStorage for frontend role detection
+      localStorage.setItem('farmify_is_driver', 'true')
+
+      // Override stored user role so frontend checks work (user.role === 'driver')
       const storedUser = localStorage.getItem('farmify_user')
       if (storedUser) {
         const u = JSON.parse(storedUser)
-        if (u.role === 'driver') {
-          navigate('/deliveries/dashboard')
-          return
-        }
+        u.role = 'driver'
+        localStorage.setItem('farmify_user', JSON.stringify(u))
       }
-      navigate('/dashboard')
+
+      setRegistered(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
     } finally {
       setLoading(false)
     }
+  }
+
+  if (registered) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-16 text-center animate-fade-in">
+        <HugeiconsIcon icon={DeliveryTruck01Icon} className="size-16 text-primary mx-auto mb-4" />
+        <h1 className="text-2xl font-bold font-display">Registration Submitted!</h1>
+        <p className="text-muted-foreground mt-2">
+          Your delivery rider account is pending verification. You'll be able to start
+          accepting deliveries once an admin approves your account.
+        </p>
+        <Button className="mt-6" onClick={() => navigate('/deliveries/dashboard')}>
+          Go to Dashboard
+        </Button>
+      </div>
+    )
   }
 
   return (
@@ -85,12 +129,13 @@ export default function Register() {
 
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="font-display">Create Your Account</CardTitle>
-            <CardDescription>Join Farmify and start growing</CardDescription>
+            <CardTitle className="font-display">Become a Delivery Rider</CardTitle>
+            <CardDescription>
+              Deliver farm-fresh products and earn on your schedule
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Error message */}
               {error && (
                 <div className="rounded-md bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
                   {error}
@@ -109,7 +154,7 @@ export default function Register() {
               <Input
                 label="Email"
                 type="email"
-                placeholder="farmer@example.com"
+                placeholder="rider@example.com"
                 value={form.email}
                 onChange={(e) => setField('email', e.target.value)}
                 error={errors.email}
@@ -117,20 +162,50 @@ export default function Register() {
               />
 
               <Input
-                label="Phone (optional)"
+                label="Phone"
                 type="tel"
                 placeholder="+63 912 345 6789"
                 value={form.phone}
                 onChange={(e) => setField('phone', e.target.value)}
+                error={errors.phone}
                 autoComplete="tel"
               />
 
               <Select
-                label="I want to join as"
-                value={form.role}
-                onChange={(e) => setField('role', e.target.value)}
-                options={roleOptions}
-                error={errors.role}
+                label="Vehicle Type"
+                value={form.vehicleType}
+                onChange={(e) => setField('vehicleType', e.target.value)}
+                options={vehicleOptions}
+              />
+
+              <Input
+                label="Vehicle Plate Number"
+                placeholder="ABC 1234"
+                value={form.vehiclePlate}
+                onChange={(e) => setField('vehiclePlate', e.target.value)}
+                error={errors.vehiclePlate}
+              />
+
+              <Input
+                label="Service Area"
+                placeholder="e.g. Manila, Quezon City"
+                value={form.serviceArea}
+                onChange={(e) => setField('serviceArea', e.target.value)}
+                error={errors.serviceArea}
+              />
+
+              <Select
+                label="Service Radius (km)"
+                value={form.serviceRadius}
+                onChange={(e) => setField('serviceRadius', e.target.value)}
+                options={[
+                  { value: '5', label: '5 km' },
+                  { value: '10', label: '10 km' },
+                  { value: '15', label: '15 km' },
+                  { value: '20', label: '20 km' },
+                  { value: '30', label: '30 km' },
+                  { value: '50', label: '50 km' },
+                ]}
               />
 
               <Input
@@ -155,20 +230,8 @@ export default function Register() {
                 autoComplete="new-password"
               />
 
-              <Button
-                type="submit"
-                className="w-full"
-                size="lg"
-                disabled={loading}
-              >
-                {loading ? (
-                  'Creating account...'
-                ) : (
-                  <>
-                    <HugeiconsIcon icon={UserAdd01Icon} className="size-4" />
-                    Create Account
-                  </>
-                )}
+              <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                {loading ? 'Submitting...' : 'Register as Rider'}
               </Button>
             </form>
 

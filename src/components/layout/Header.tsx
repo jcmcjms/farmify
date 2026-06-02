@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { ArrowDown01Icon, Briefcase01Icon, Cancel01Icon, CheckmarkBadge01Icon, DashboardSquare01Icon, Logout01Icon, Menu01Icon, NaturalFoodIcon, PackageIcon, Shield01Icon, ShoppingCart01Icon, UserIcon, WarehouseIcon } from '@hugeicons/core-free-icons'
+import { ArrowDown01Icon, Briefcase01Icon, Cancel01Icon, CheckmarkBadge01Icon, DashboardSquare01Icon, DeliveryTruck01Icon, Logout01Icon, Menu01Icon, NaturalFoodIcon, PackageIcon, Shield01Icon, ShoppingCart01Icon, UserIcon, WarehouseIcon } from '@hugeicons/core-free-icons'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
@@ -35,6 +35,7 @@ export function Header() {
 
   const isFarmer = user?.role === 'farmer'
   const isAdmin = user?.role === 'admin'
+  const isDriver = user?.role === 'driver'
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
@@ -68,6 +69,14 @@ export function Header() {
                   {link.label}
                 </Link>
               ))}
+            {isDriver && (
+              <Link
+                to="/deliveries/dashboard"
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Deliveries
+              </Link>
+            )}
           </nav>
         )}
 
@@ -116,6 +125,16 @@ export function Header() {
                         >
                           <HugeiconsIcon icon={CheckmarkBadge01Icon} className="size-4" />
                           Verification
+                        </Link>
+                      )}
+                      {isDriver && (
+                        <Link
+                          to="/deliveries/dashboard"
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted transition-colors"
+                        >
+                          <HugeiconsIcon icon={DeliveryTruck01Icon} className="size-4" />
+                          Deliveries
                         </Link>
                       )}
                       {isAdmin && (
@@ -205,6 +224,16 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+          {isDriver && (
+            <Link
+              to="/deliveries/dashboard"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
+            >
+              <HugeiconsIcon icon={DeliveryTruck01Icon} className="size-4" />
+              Deliveries
+            </Link>
+          )}
 
           <hr className="my-2 border-border" />
 

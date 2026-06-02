@@ -35,6 +35,9 @@ const AdminRoles = lazy(() => import('@/pages/admin/AdminRoles'))
 const FarmerVerification = lazy(() => import('@/pages/FarmerVerification'))
 const AdminVerifications = lazy(() => import('@/pages/admin/AdminVerifications'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
+const DriverRegister = lazy(() => import('@/pages/deliveries/DriverRegister'))
+const DriverDashboard = lazy(() => import('@/pages/deliveries/DriverDashboard'))
+const DriverDeliveryDetail = lazy(() => import('@/pages/deliveries/DriverDeliveryDetail'))
 
 /**
  * Wrap a component with Suspense for lazy loading.
@@ -238,6 +241,36 @@ export default function App() {
                 <ProtectedRoute requiredRole="farmer">
                   <SuspenseWrapper>
                     <FarmerVerification />
+                  </SuspenseWrapper>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Delivery Routes */}
+            <Route
+              path="/deliveries/register"
+              element={
+                <SuspenseWrapper>
+                  <DriverRegister />
+                </SuspenseWrapper>
+              }
+            />
+            <Route
+              path="/deliveries/dashboard"
+              element={
+                <ProtectedRoute requiredRole="driver">
+                  <SuspenseWrapper>
+                    <DriverDashboard />
+                  </SuspenseWrapper>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/deliveries/:id"
+              element={
+                <ProtectedRoute requiredRole="driver">
+                  <SuspenseWrapper>
+                    <DriverDeliveryDetail />
                   </SuspenseWrapper>
                 </ProtectedRoute>
               }

@@ -135,7 +135,7 @@ export default function Jobs() {
 
       {!loading && !error && jobs.length === 0 && (
         <EmptyState
-          icon={Briefcase}
+          icon={Briefcase01Icon}
           title="No jobs found"
           description={
             search || category || employmentType

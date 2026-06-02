@@ -4,7 +4,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  role: 'farmer' | 'buyer' | 'admin';
+  role: 'farmer' | 'buyer' | 'admin' | 'driver';
   phone?: string | null;
   address?: string | null;
   avatar_url?: string | null;
@@ -31,13 +31,14 @@ export interface Product {
 export interface Order {
   id: number;
   buyer_id: number;
-  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'ready_for_pickup' | 'picked_up' | 'in_transit' | 'delivered' | 'cancelled';
   total_amount: number;
   items?: OrderItem[];
   buyer_name?: string;
   shipping_address?: string | null;
   payment_method?: string | null;
   notes?: string | null;
+  delivery?: Delivery | null;
   created_at: string;
 }
 
@@ -49,6 +50,54 @@ export interface OrderItem {
   quantity: number;
   unit_price: number;
   subtotal: number;
+}
+
+// ── Delivery Types ────────────────────────────────────────────────────
+
+export interface DriverProfile {
+  user_id: number;
+  vehicle_type: 'bike' | 'motorcycle' | 'car' | 'truck' | 'van';
+  vehicle_plate: string;
+  service_area: string;
+  service_radius_km: number;
+  is_available: boolean;
+  is_verified: boolean;
+  verification_document_url?: string | null;
+  rating: number;
+  total_deliveries: number;
+  current_lat?: number | null;
+  current_lng?: number | null;
+}
+
+export interface Delivery {
+  id: number;
+  order_id: number;
+  driver_id?: number | null;
+  farmer_id: number;
+  status: 'waiting_assignment' | 'assigned' | 'accepted' | 'picked_up' | 'in_transit' | 'delivered' | 'failed' | 'cancelled';
+  assigned_at?: string | null;
+  accepted_at?: string | null;
+  picked_up_at?: string | null;
+  delivered_at?: string | null;
+  pickup_notes?: string | null;
+  delivery_notes?: string | null;
+  driver_rating?: number | null;
+  buyer_rating?: number | null;
+  driver_name?: string;
+  driver_vehicle?: string;
+  driver_phone?: string;
+  created_at: string;
+}
+
+export interface FarmerDriver {
+  farmer_id: number;
+  driver_id: number;
+  is_preferred: boolean;
+  nickname?: string | null;
+  driver_name?: string;
+  driver_rating?: number;
+  driver_vehicle?: string;
+  joined_at: string;
 }
 
 export interface CartItem {
@@ -139,7 +188,7 @@ export interface RegisterBody {
   name: string;
   email: string;
   password: string;
-  role?: 'farmer' | 'buyer';
+  role?: 'farmer' | 'buyer' | 'driver';
   phone?: string;
   address?: string;
 }
@@ -176,7 +225,7 @@ export interface CreateOrderBody {
 }
 
 export interface UpdateOrderStatusBody {
-  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'ready_for_pickup' | 'picked_up' | 'in_transit' | 'delivered' | 'cancelled';
 }
 
 export interface CreateJobBody {

@@ -18,6 +18,18 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 /**
+ * If the user has the driver flag set in localStorage,
+ * override their role from 'buyer' (backend value) to 'driver' (frontend value).
+ * The backend doesn't support a 'driver' role, so we track it client-side.
+ */
+function applyDriverOverride(user: User): User {
+  if (localStorage.getItem('farmify_is_driver') === 'true') {
+    return { ...user, role: 'driver' }
+  }
+  return user
+}
+
+/**
  * Auth provider — manages user authentication state.
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -36,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    // Try to restore user from cache first
+    // Try to restore user from cache first (with driver override)
     const cached = localStorage.getItem('farmify_user')
     if (cached) {
       try {
@@ -51,8 +63,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .getMe()
       .then((res) => {
         if (res.data) {
-          setUser(res.data)
-          localStorage.setItem('farmify_user', JSON.stringify(res.data))
+          const enriched = applyDriverOverride(res.data)
+          setUser(enriched)
+          localStorage.setItem('farmify_user', JSON.stringify(enriched))
         }
       })
       .catch(() => {
@@ -73,8 +86,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await authApi.login(body)
     if (res.data) {
       localStorage.setItem('farmify_token', res.data.token)
-      localStorage.setItem('farmify_user', JSON.stringify(res.data.user))
-      setUser(res.data.user)
+      const enriched = applyDriverOverride(res.data.user)
+      localStorage.setItem('farmify_user', JSON.stringify(enriched))
+      setUser(enriched)
     }
   }, [])
 
@@ -85,8 +99,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await authApi.register(body)
     if (res.data) {
       localStorage.setItem('farmify_token', res.data.token)
-      localStorage.setItem('farmify_user', JSON.stringify(res.data.user))
-      setUser(res.data.user)
+      const enriched = applyDriverOverride(res.data.user)
+      localStorage.setItem('farmify_user', JSON.stringify(enriched))
+      setUser(enriched)
     }
   }, [])
 
@@ -96,6 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     localStorage.removeItem('farmify_token')
     localStorage.removeItem('farmify_user')
+    localStorage.removeItem('farmify_is_driver')
     setUser(null)
   }, [])
 
