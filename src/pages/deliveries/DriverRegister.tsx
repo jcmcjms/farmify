@@ -60,12 +60,12 @@ export default function DriverRegister() {
 
     setLoading(true)
     try {
-      // Register as 'buyer' (backend only accepts 'farmer' | 'buyer')
+      // Register as 'driver' — the backend now supports this as a first-class role
       await register({
         name: form.name,
         email: form.email,
         password: form.password,
-        role: 'buyer',
+        role: 'driver',
         phone: form.phone || undefined,
       })
 
@@ -78,18 +78,7 @@ export default function DriverRegister() {
           service_radius_km: Number(form.serviceRadius),
         })
       } catch {
-        // Profile save is best-effort; registration already succeeded
-      }
-
-      // Mark user as driver in localStorage for frontend role detection
-      localStorage.setItem('farmify_is_driver', 'true')
-
-      // Override stored user role so frontend checks work (user.role === 'driver')
-      const storedUser = localStorage.getItem('farmify_user')
-      if (storedUser) {
-        const u = JSON.parse(storedUser)
-        u.role = 'driver'
-        localStorage.setItem('farmify_user', JSON.stringify(u))
+        // Profile save is best-effort; user can complete it later from their dashboard
       }
 
       setRegistered(true)

@@ -18,7 +18,7 @@ const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(255),
   email: z.string().email('Invalid email address').max(255),
   password: z.string().min(6, 'Password must be at least 6 characters').max(255),
-  role: z.enum(['farmer', 'buyer']).optional().default('buyer'),
+  role: z.enum(['farmer', 'buyer', 'driver']).optional().default('buyer'),
   phone: z.string().max(50).optional().nullable(),
   address: z.string().optional().nullable(),
 });

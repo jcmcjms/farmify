@@ -7,7 +7,7 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  role: 'farmer' | 'buyer' | 'admin';
+  role: 'farmer' | 'buyer' | 'admin' | 'driver';
   phone: string | null;
   address: string | null;
   avatar_url: string | null;
@@ -138,7 +138,7 @@ export interface RegisterBody {
   name: string;
   email: string;
   password: string;
-  role?: 'farmer' | 'buyer';
+  role?: 'farmer' | 'buyer' | 'driver';
   phone?: string;
   address?: string;
 }
@@ -303,7 +303,7 @@ export interface AuthenticatedRequest extends Request {
     id: number;
     name: string;
     email: string;
-    role: 'farmer' | 'buyer' | 'admin';
+    role: 'farmer' | 'buyer' | 'admin' | 'driver';
   };
 }
 
@@ -313,7 +313,7 @@ export interface JwtPayload {
   id: number;
   name: string;
   email: string;
-  role: 'farmer' | 'buyer' | 'admin';
+  role: 'farmer' | 'buyer' | 'admin' | 'driver';
   iat?: number;
   exp?: number;
 }

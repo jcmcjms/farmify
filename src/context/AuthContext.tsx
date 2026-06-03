@@ -17,20 +17,20 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-/**
- * If the user has the driver flag set in localStorage,
- * override their role from 'buyer' (backend value) to 'driver' (frontend value).
- * The backend doesn't support a 'driver' role, so we track it client-side.
- */
-function applyDriverOverride(user: User): User {
-  if (localStorage.getItem('farmify_is_driver') === 'true') {
-    return { ...user, role: 'driver' }
+function setUserData(setUser: (u: User | null) => void, user: User | null): void {
+  setUser(user)
+  if (user) {
+    localStorage.setItem('farmify_user', JSON.stringify(user))
+  } else {
+    localStorage.removeItem('farmify_user')
   }
-  return user
 }
 
 /**
  * Auth provider — manages user authentication state.
+ *
+ * The backend now supports 'driver' as a first-class role alongside
+ * 'farmer', 'buyer', and 'admin' — no client-side role overrides needed.
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAuthenticated = !!user
 
   /**
-   * On mount, check for existing token and validate it.
+   * On mount, restore token and validate with backend.
    */
   useEffect(() => {
     const token = localStorage.getItem('farmify_token')
@@ -48,13 +48,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    // Try to restore user from cache first (with driver override)
+    // Quick-render from cache
     const cached = localStorage.getItem('farmify_user')
     if (cached) {
       try {
         setUser(JSON.parse(cached))
       } catch {
-        // Invalid cache, ignore
+        // ignore
       }
     }
 
@@ -63,13 +63,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .getMe()
       .then((res) => {
         if (res.data) {
-          const enriched = applyDriverOverride(res.data)
-          setUser(enriched)
-          localStorage.setItem('farmify_user', JSON.stringify(enriched))
+          setUserData(setUser, res.data)
         }
       })
       .catch(() => {
-        // Token invalid — clear
         localStorage.removeItem('farmify_token')
         localStorage.removeItem('farmify_user')
         setUser(null)
@@ -86,9 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await authApi.login(body)
     if (res.data) {
       localStorage.setItem('farmify_token', res.data.token)
-      const enriched = applyDriverOverride(res.data.user)
-      localStorage.setItem('farmify_user', JSON.stringify(enriched))
-      setUser(enriched)
+      setUserData(setUser, res.data.user)
     }
   }, [])
 
@@ -99,9 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await authApi.register(body)
     if (res.data) {
       localStorage.setItem('farmify_token', res.data.token)
-      const enriched = applyDriverOverride(res.data.user)
-      localStorage.setItem('farmify_user', JSON.stringify(enriched))
-      setUser(enriched)
+      setUserData(setUser, res.data.user)
     }
   }, [])
 
@@ -111,7 +104,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     localStorage.removeItem('farmify_token')
     localStorage.removeItem('farmify_user')
-    localStorage.removeItem('farmify_is_driver')
     setUser(null)
   }, [])
 
@@ -121,8 +113,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const updateProfile = useCallback(async (body: UpdateProfileBody) => {
     const res = await authApi.updateProfile(body)
     if (res.data) {
-      setUser(res.data)
-      localStorage.setItem('farmify_user', JSON.stringify(res.data))
+      setUserData(setUser, res.data)
     }
   }, [])
 

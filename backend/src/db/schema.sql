@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
   password VARCHAR(255) NOT NULL,
-  role VARCHAR(50) DEFAULT 'farmer' CHECK (role IN ('farmer', 'buyer', 'admin')),
+  role VARCHAR(50) DEFAULT 'farmer' CHECK (role IN ('farmer', 'buyer', 'admin', 'driver')),
   phone VARCHAR(50),
   address TEXT,
   avatar_url TEXT,
@@ -176,3 +176,18 @@ CREATE TABLE IF NOT EXISTS verification_documents (
 CREATE INDEX IF NOT EXISTS idx_users_verification_status ON users(verification_status);
 CREATE INDEX IF NOT EXISTS idx_farmer_profiles_farmer ON farmer_profiles(farmer_id);
 CREATE INDEX IF NOT EXISTS idx_verification_docs_farmer ON verification_documents(farmer_id);
+
+-- ── Driver Role Migration ─────────────────────────────────────────────
+-- Extend the users.role CHECK constraint to accept 'driver'.
+DO $$
+BEGIN
+  -- Drop the old constraint (PostgreSQL auto-names inline CHECK as tablename_columnname_check)
+  IF EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'users_role_check' AND conrelid = 'users'::regclass
+  ) THEN
+    ALTER TABLE users DROP CONSTRAINT users_role_check;
+    ALTER TABLE users ADD CONSTRAINT users_role_check
+      CHECK (role IN ('farmer', 'buyer', 'admin', 'driver'));
+  END IF;
+END $$;
