@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/node';
  */
 export function initSentry(): void {
   if (!process.env.SENTRY_DSN) {
-    console.warn('[Sentry] SENTRY_DSN not configured — skipping initialization');
+    // Not configured — silently skip. Set SENTRY_DSN in .env to enable.
     return;
   }
 

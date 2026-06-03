@@ -7,7 +7,7 @@ import * as Sentry from '@sentry/react'
 export function initSentry(): void {
   const dsn = import.meta.env.VITE_SENTRY_DSN
   if (!dsn) {
-    console.info('[Sentry] VITE_SENTRY_DSN not configured — skipping initialization')
+    // Not configured — silently skip. Set VITE_SENTRY_DSN in .env to enable.
     return
   }
 
