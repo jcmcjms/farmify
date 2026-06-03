@@ -34,7 +34,7 @@ export interface Product {
 export interface Order {
   id: number;
   buyer_id: number;
-  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'shipped' | 'ready_for_pickup' | 'picked_up' | 'in_transit' | 'delivered' | 'cancelled';
   total_amount: number;
   shipping_address: string | null;
   payment_method: string | null;
@@ -109,6 +109,52 @@ export interface InventoryTransaction {
   reference_type: string | null;
   reference_id: number | null;
   notes: string | null;
+  created_at: string;
+}
+
+// ── Delivery Types ────────────────────────────────────────────────────
+
+export interface DriverProfile {
+  id?: number;
+  user_id: number;
+  vehicle_type: 'bike' | 'motorcycle' | 'car' | 'truck' | 'van';
+  vehicle_plate: string;
+  service_area: string;
+  service_radius_km: number;
+  is_available: boolean;
+  is_verified: boolean;
+  verification_document_url: string | null;
+  rating: number;
+  total_deliveries: number;
+  current_lat: number | null;
+  current_lng: number | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Delivery {
+  id: number;
+  order_id: number;
+  driver_id: number | null;
+  farmer_id: number;
+  status: 'waiting_assignment' | 'assigned' | 'accepted' | 'picked_up' | 'in_transit' | 'delivered' | 'failed' | 'cancelled';
+  assigned_at: string | null;
+  accepted_at: string | null;
+  picked_up_at: string | null;
+  delivered_at: string | null;
+  pickup_notes: string | null;
+  delivery_notes: string | null;
+  driver_rating: number | null;
+  buyer_rating: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FarmerDriver {
+  farmer_id: number;
+  driver_id: number;
+  is_preferred: boolean;
+  nickname: string | null;
   created_at: string;
 }
 

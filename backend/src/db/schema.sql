@@ -181,7 +181,6 @@ CREATE INDEX IF NOT EXISTS idx_verification_docs_farmer ON verification_document
 -- Extend the users.role CHECK constraint to accept 'driver'.
 DO $$
 BEGIN
-  -- Drop the old constraint (PostgreSQL auto-names inline CHECK as tablename_columnname_check)
   IF EXISTS (
     SELECT 1 FROM pg_constraint
     WHERE conname = 'users_role_check' AND conrelid = 'users'::regclass
@@ -189,5 +188,77 @@ BEGIN
     ALTER TABLE users DROP CONSTRAINT users_role_check;
     ALTER TABLE users ADD CONSTRAINT users_role_check
       CHECK (role IN ('farmer', 'buyer', 'admin', 'driver'));
+  END IF;
+END $$;
+
+-- ── Delivery System ───────────────────────────────────────────────────
+
+-- Driver Profiles Table
+CREATE TABLE IF NOT EXISTS driver_profiles (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  vehicle_type VARCHAR(50) NOT NULL CHECK (vehicle_type IN ('bike', 'motorcycle', 'car', 'truck', 'van')),
+  vehicle_plate VARCHAR(50) NOT NULL,
+  service_area VARCHAR(255) NOT NULL,
+  service_radius_km DECIMAL(5, 1) DEFAULT 10,
+  is_available BOOLEAN DEFAULT TRUE,
+  is_verified BOOLEAN DEFAULT FALSE,
+  verification_document_url TEXT,
+  rating DECIMAL(3, 2) DEFAULT 0,
+  total_deliveries INTEGER DEFAULT 0,
+  current_lat DECIMAL(10, 7),
+  current_lng DECIMAL(10, 7),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Deliveries Table
+CREATE TABLE IF NOT EXISTS deliveries (
+  id SERIAL PRIMARY KEY,
+  order_id INTEGER UNIQUE NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  driver_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  farmer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  status VARCHAR(50) DEFAULT 'waiting_assignment'
+    CHECK (status IN ('waiting_assignment', 'assigned', 'accepted', 'picked_up', 'in_transit', 'delivered', 'failed', 'cancelled')),
+  assigned_at TIMESTAMP,
+  accepted_at TIMESTAMP,
+  picked_up_at TIMESTAMP,
+  delivered_at TIMESTAMP,
+  pickup_notes TEXT,
+  delivery_notes TEXT,
+  driver_rating INTEGER,
+  buyer_rating INTEGER,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Farmer-Driver Relationships Table
+CREATE TABLE IF NOT EXISTS farmer_drivers (
+  farmer_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  driver_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  is_preferred BOOLEAN DEFAULT FALSE,
+  nickname VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (farmer_id, driver_id)
+);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_driver_profiles_user ON driver_profiles(user_id);
+CREATE INDEX IF NOT EXISTS idx_deliveries_driver ON deliveries(driver_id);
+CREATE INDEX IF NOT EXISTS idx_deliveries_order ON deliveries(order_id);
+CREATE INDEX IF NOT EXISTS idx_deliveries_status ON deliveries(status);
+CREATE INDEX IF NOT EXISTS idx_farmer_drivers_farmer ON farmer_drivers(farmer_id);
+CREATE INDEX IF NOT EXISTS idx_farmer_drivers_driver ON farmer_drivers(driver_id);
+
+-- Order Status Migration — add delivery-related statuses
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'orders_status_check' AND conrelid = 'orders'::regclass
+  ) THEN
+    ALTER TABLE orders DROP CONSTRAINT orders_status_check;
+    ALTER TABLE orders ADD CONSTRAINT orders_status_check
+      CHECK (status IN ('pending', 'confirmed', 'shipped', 'ready_for_pickup', 'picked_up', 'in_transit', 'delivered', 'cancelled'));
   END IF;
 END $$;

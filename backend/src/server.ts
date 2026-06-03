@@ -22,6 +22,8 @@ import dashboardRoutes from './routes/dashboard.js';
 import adminRoutes from './routes/admin.js';
 import verificationRoutes from './routes/verification.js';
 import adminVerificationRoutes from './routes/adminVerifications.js';
+import driverRoutes from './routes/drivers.js';
+import deliveryRoutes from './routes/deliveries.js';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '5000', 10);
@@ -91,6 +93,12 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin', adminVerificationRoutes);
+app.use('/api/drivers', driverRoutes);
+app.use('/api/deliveries', deliveryRoutes);
+
+// Delivery lookup by order (nested under orders route)
+import { deliveryController } from './controllers/deliveryController.js';
+app.get('/api/orders/:orderId/delivery', deliveryController.getByOrder);
 
 // ── 404 Handler ────────────────────────────────────────────────────────
 
