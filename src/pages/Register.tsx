@@ -12,6 +12,7 @@ import { NaturalFoodIcon, UserAdd01Icon } from '@hugeicons/core-free-icons'
 const roleOptions = [
   { value: 'farmer', label: 'Farmer' },
   { value: 'buyer', label: 'Buyer' },
+  { value: 'driver', label: 'Delivery Rider' },
 ]
 
 /**
@@ -26,7 +27,7 @@ export default function Register() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'farmer' as 'farmer' | 'buyer',
+    role: 'farmer' as 'farmer' | 'buyer' | 'driver',
     phone: '',
   })
   const [error, setError] = useState('')
@@ -56,13 +57,9 @@ export default function Register() {
         phone: form.phone || undefined,
       })
       // Redirect based on role
-      const storedUser = localStorage.getItem('farmify_user')
-      if (storedUser) {
-        const u = JSON.parse(storedUser)
-        if (u.role === 'driver') {
-          navigate('/deliveries/dashboard')
-          return
-        }
+      if (form.role === 'driver') {
+        navigate('/deliveries/dashboard')
+        return
       }
       navigate('/dashboard')
     } catch (err) {
