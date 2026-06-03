@@ -5,6 +5,7 @@ import { useForm } from '@/hooks/useForm'
 import { driversApi } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
 import { Select } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -197,9 +198,8 @@ export default function DriverRegister() {
                 ]}
               />
 
-              <Input
+              <PasswordInput
                 label="Password"
-                type="password"
                 placeholder="At least 6 characters"
                 value={form.password}
                 onChange={(e) => setField('password', e.target.value)}
@@ -208,9 +208,8 @@ export default function DriverRegister() {
                 autoComplete="new-password"
               />
 
-              <Input
+              <PasswordInput
                 label="Confirm Password"
-                type="password"
                 placeholder="Repeat your password"
                 value={form.confirmPassword}
                 onChange={(e) => setField('confirmPassword', e.target.value)}

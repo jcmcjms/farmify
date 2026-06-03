@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useForm } from '@/hooks/useForm'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { Login01Icon, NaturalFoodIcon } from '@hugeicons/core-free-icons'
@@ -90,9 +91,8 @@ export default function Login() {
                 autoComplete="email"
               />
 
-              <Input
+              <PasswordInput
                 label="Password"
-                type="password"
                 placeholder="Enter your password"
                 value={form.password}
                 onChange={(e) => setField('password', e.target.value)}
